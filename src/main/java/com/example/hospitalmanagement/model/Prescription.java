@@ -1,10 +1,6 @@
 package com.example.hospitalmanagement.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import lombok.*;
 @Entity
 @Table(name = "prescriptions")
@@ -14,11 +10,13 @@ import lombok.*;
 public class Prescription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String prescriptionId;
-    private String examinationId;
+    private Long prescriptionId;
+    @ManyToOne
+    @JoinColumn(name="examination_id", nullable = false)
+    private Examination examination;
     private String medication;
     private String dosage;
-    private String amount;
+    private int amount;
     private double price;
 
 

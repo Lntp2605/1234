@@ -1,10 +1,6 @@
 package com.example.hospitalmanagement.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
@@ -18,8 +14,12 @@ public class Admission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long admissionId;
-    private String patientId;
-    private String departmentId;
+    @ManyToOne
+    @JoinColumn(name="patien_id")
+    private Patient patient;
+    @ManyToOne
+    @JoinColumn(name="department_id")
+    private Department department;
     private Date admissionDate;
     private Date dischargeDate;
     private String reasonForAdmission;
