@@ -5,6 +5,8 @@ import com.example.hospitalmanagement.service.PatientService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
 
 @Controller
 @RequestMapping("/patients")
@@ -37,6 +39,13 @@ public class PatientController {
         } else {
             return "redirect:/patients/error"; // hoặc trang báo lỗi nếu không tìm thấy
         }
+    }
+    @GetMapping("/search")
+    public String searchPatients(@RequestParam("keyword") String keyword, Model model) {
+        List<Patient> results = patientService.searchPatients(keyword);
+        model.addAttribute("patients", results);
+        model.addAttribute("keyword", keyword);
+        return "patients/list";
     }
 
 }

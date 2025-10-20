@@ -3,6 +3,7 @@ package com.example.hospitalmanagement.service;
 import com.example.hospitalmanagement.model.Patient;
 import com.example.hospitalmanagement.repository.PatientRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 import java.util.Optional;
 
@@ -38,4 +39,11 @@ public class PatientService {
         }
         return false; // Không tìm thấy bệnh nhân
     }
+    public List<Patient> searchPatients(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return patientRepository.findAll();
+        }
+        return patientRepository.searchPatients(keyword.trim());
+    }
+
 }
