@@ -29,4 +29,14 @@ public class PatientController {
         patientService.updatePatient(patient);
         return "redirect:/patients"; // Sau khi sửa xong quay về danh sách bệnh nhân
     }
+    @GetMapping("/delete/{id}")
+    public String deletePatient(@PathVariable("id") Long id) {
+        boolean isDeleted = patientService.deletePatientById(id);
+        if (isDeleted) {
+            return "redirect:/patients/list"; // trang danh sách bệnh nhân
+        } else {
+            return "redirect:/patients/error"; // hoặc trang báo lỗi nếu không tìm thấy
+        }
+    }
+
 }

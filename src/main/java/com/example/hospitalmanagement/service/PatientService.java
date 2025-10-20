@@ -31,4 +31,11 @@ public class PatientService {
             patientRepository.save(existing);
         });
     }
+    public boolean deletePatientById(Long id) {
+        if (patientRepository.existsById(id)) {
+            patientRepository.deleteById(id);
+            return true; // Xoá thành công
+        }
+        return false; // Không tìm thấy bệnh nhân
+    }
 }
