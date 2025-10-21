@@ -3,7 +3,6 @@ package com.example.hospitalmanagement.service;
 import com.example.hospitalmanagement.model.Department;
 import com.example.hospitalmanagement.repository.DepartmentRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -25,6 +24,12 @@ public class DepartmentService {
             return true;
         }
         return false;
+    }
+    public List<Department> searchDepartments(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return departmentRepository.findAll();
+        }
+        return departmentRepository.searchDepartments(keyword.trim());
     }
 
 }

@@ -3,8 +3,9 @@ package com.example.hospitalmanagement.controller;
 import com.example.hospitalmanagement.model.Department;
 import com.example.hospitalmanagement.service.DepartmentService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import org.springframework.ui.Model;
+
 
 @RestController
 @RequestMapping("/api/departments")
@@ -30,6 +31,13 @@ public class DepartmentController {
         } else {
             return "redirect:/departments/error"; // Nếu không tìm thấy
         }
+    }
+    @GetMapping("/search")
+    public String searchDepartments(@RequestParam("keyword") String keyword, Model model) {
+        List<Department> results = departmentService.searchDepartments(keyword);
+        model.addAttribute("departments", results);
+        model.addAttribute("keyword", keyword);
+        return "departments/list"; // Trang hiển thị danh sách kết quả
     }
 
 }
