@@ -1,97 +1,10 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Danh sách bệnh nhân</title>
-
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
-  <!-- CSS chung (nếu dự án có) -->
-  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
-  <link rel="stylesheet" th:href="@{/css/style.css}" />
-  <link rel="stylesheet" th:href="@{/css/responsive.css}" />
-
-  <!-- CSS riêng trang bệnh nhân -->
-  <link rel="stylesheet" th:href="@{/css/patients.css}" />
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
-<body class="u-bg">
+<body>
 
-  <!-- HEADER chung -->
-  <div th:replace="fragments/header :: siteHeader"></div>
-
-  <main class="container page">
-    <section class="page-hero">
-      <div class="hero-left">
-        <h1 class="title">Danh sách bệnh nhân</h1>
-        <p class="subtitle">
-          Giao diện tối giản, dễ nhìn – sắp xếp theo <strong>Tên</strong> và phân trang mỗi <strong>10</strong> bản ghi.
-        </p>
-      </div>
-      <div class="hero-right">
-        <div class="toolbar">
-          <!-- Ô tìm kiếm chỉ để nhập, chưa xử lý logic -->
-          <div class="input">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Nhập tên hoặc CCCD (chưa xử lý)" />
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="card card-elevated">
-      <div class="table-wrap">
-        <table class="table" id="patientTable" aria-describedby="patientTableCaption">
-          <caption id="patientTableCaption" class="sr-only">
-            Bảng danh sách bệnh nhân: ID, Tên, CCCD, SĐT, Địa chỉ, Ngày sinh, Tiền sử bệnh.
-          </caption>
-          <thead>
-            <tr>
-              <th style="width:84px">ID</th>
-              <th>
-                <button id="sortNameBtn" class="sort-btn" aria-label="Sắp xếp theo tên">
-                  <span>Tên</span>
-                  <i id="sortIcon" class="fa-solid fa-arrow-up-wide-short"></i>
-                </button>
-              </th>
-              <th>CCCD</th>
-              <th>SĐT</th>
-              <th>Địa chỉ</th>
-              <th>Ngày sinh</th>
-              <th>Tiền sử bệnh</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-            <!-- JS sẽ render -->
-          </tbody>
-        </table>
-      </div>
-
-      <div class="pagination" id="pagination"></div>
-    </section>
-
-    <section class="tips">
-      <i class="fa-regular fa-lightbulb"></i>
-      <span>
-        <b>Mẹo:</b> Bấm vào <em>Tên</em> để đổi thứ tự ↑/↓. Kéo ngang nếu màn hình nhỏ.
-      </span>
-    </section>
-  </main>
-
-  <!-- FOOTER chung -->
-  <div th:replace="fragments/footer :: siteFooter"></div>
-
-  <!-- JS chung -->
-  <script th:src="@{/js/jquery.min.js}"></script>
-  <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-  <script th:src="@{/js/main.js}"></script>
-
-  <!-- JS riêng trang bệnh nhân -->
-  <script th:src="@{/js/patients.js}"></script>
 </body>
 </html>
