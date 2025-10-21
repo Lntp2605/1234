@@ -19,4 +19,12 @@ public class DepartmentService {
     public List<Department> getAllDepartments() {
         return departmentRepository.findAll();
     }
+    public boolean deleteDepartmentById(Long id) {
+        if (departmentRepository.existsById(id)) {
+            departmentRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
 }

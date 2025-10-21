@@ -22,4 +22,14 @@ public class DepartmentController {
     public List<Department> getAllDepartments() {
         return departmentService.getAllDepartments();
     }
+    @GetMapping("/delete/{id}")
+    public String deleteDepartment(@PathVariable("id") Long id) {
+        boolean isDeleted = departmentService.deleteDepartmentById(id);
+        if (isDeleted) {
+            return "redirect:/departments/list"; // Sau khi xoá, quay lại danh sách
+        } else {
+            return "redirect:/departments/error"; // Nếu không tìm thấy
+        }
+    }
+
 }
