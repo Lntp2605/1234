@@ -80,4 +80,9 @@ public class PrescriptionController {
             return "edit-prescription";
         }
     }
+    @GetMapping("/delete/{id}")
+    public String deletePrescription(@PathVariable("id") Long id) {
+        prescriptionService.deletePrescriptionById(id);
+        return "redirect:/prescriptions/list";
+    }
 }

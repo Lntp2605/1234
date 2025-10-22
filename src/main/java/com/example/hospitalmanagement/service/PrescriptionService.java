@@ -5,8 +5,8 @@ import com.example.hospitalmanagement.model.Examination;
 import com.example.hospitalmanagement.repository.PrescriptionRepository;
 import com.example.hospitalmanagement.repository.ExaminationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PrescriptionService {
@@ -90,5 +90,13 @@ public class PrescriptionService {
         prescription.setPrice(price);
 
         prescriptionRepository.save(prescription);
+    }
+
+    // Xóa đơn thuốc
+    @Transactional
+    public void deletePrescriptionById(Long id) {
+        if (prescriptionRepository.existsById(id)) {
+            prescriptionRepository.deleteById(id);
+        }
     }
 }

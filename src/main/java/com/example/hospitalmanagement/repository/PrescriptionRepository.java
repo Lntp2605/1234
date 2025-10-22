@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PrescriptionRepository extends JpaRepository<Prescription, Long> {
-    // Không cần viết gì thêm nếu chỉ lấy toàn bộ danh sách
+
 }
