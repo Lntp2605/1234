@@ -14,5 +14,5 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
             "LOWER(d.head) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Department> searchDepartments(@Param("keyword") String keyword);
 
+    boolean existsByDepartmentName(String departmentName);
 }
-
