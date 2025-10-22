@@ -56,11 +56,15 @@ public class DoctorService {
 
         return doctorRepository.save(existingDoctor);
     }
-
+// delete doctor
+    public void deleteDoctor(Long id) {
+        doctorRepository.deleteById(id);
+    }
     public DoctorService(DoctorRepository doctorRepository) {
         this.doctorRepository = doctorRepository;
     }
-    public void deleteDoctor(Long id) {
-        doctorRepository.deleteById(id);
+// search doctor
+    public List<Doctor> searchDoctors(String keyword) {
+        return doctorRepository.findByKeyword(keyword);
     }
 }

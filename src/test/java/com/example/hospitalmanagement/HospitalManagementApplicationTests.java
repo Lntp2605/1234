@@ -66,12 +66,24 @@ class HospitalManagementApplicationTests {
 //        System.out.println("Chuyên môn: " + result.getSpecialty());
 //        System.out.println("Email: " + result.getEmail());
 //    }
-@Test
-void testDeleteDoctor() {
-    Long doctorId = 1L; // chắc chắn ID này có trong DB
-
-    // Gọi xóa
-    doctorService.deleteDoctor(doctorId);
-}
-
+//@Test
+//void testDeleteDoctor() {
+//    Long doctorId = 1L; // chắc chắn ID này có trong DB
+//
+//    // Gọi xóa
+//    doctorService.deleteDoctor(doctorId);
+//}
+//@Test
+//void testSearchDoctor() {
+//    String keyword = "Mắt"; // từ khóa tìm kiếm
+//
+//    List<Doctor> results = doctorService.searchDoctors(keyword);
+//
+//    System.out.println("Kết quả tìm kiếm với từ khóa '" + keyword + "':");
+//    for (Doctor d : results) {
+//        System.out.println("ID: " + d.getDoctorId() +
+//                ", Tên: " + d.getName() +
+//                ", Chuyên môn: " + d.getSpecialty());
+//    }
+//}
 }

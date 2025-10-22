@@ -37,4 +37,5 @@ DoctorController {
     public Doctor updateDoctor(@PathVariable Long id, @RequestBody Doctor doctor) {
         return doctorService.updateDoctor(id, doctor);
     }
+
 }
