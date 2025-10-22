@@ -99,4 +99,11 @@ public class PrescriptionService {
             prescriptionRepository.deleteById(id);
         }
     }
+    // tim kiem thuoc
+    public List<Prescription> searchPrescriptions(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return prescriptionRepository.findAll();
+        }
+        return prescriptionRepository.searchPrescriptions(keyword.trim());
+    }
 }

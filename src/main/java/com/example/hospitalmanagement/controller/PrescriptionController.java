@@ -23,13 +23,13 @@ public class PrescriptionController {
     public String listPrescriptions(Model model) {
         List<Prescription> prescriptions = prescriptionService.getAllPrescriptions();
         model.addAttribute("prescriptions", prescriptions);
-        return "prescriptions"; // -> templates/prescriptions.html
+        return "prescriptions";
     }
 
     // ➕ Hiển thị form thêm mới
     @GetMapping("/new")
     public String showAddForm() {
-        return "add-prescription"; // form thêm đơn thuốc
+        return "add-prescription";
     }
 
     // 💾 Xử lý thêm đơn thuốc mới
@@ -42,10 +42,10 @@ public class PrescriptionController {
                                   Model model) {
         try {
             prescriptionService.addPrescription(examinationId, medication, dosage, amount, price);
-            return "redirect:/prescriptions"; // sau khi thêm thành công quay lại danh sách
+            return "redirect:/prescriptions";
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "add-prescription"; // hiển thị lại form kèm lỗi
+            return "add-prescription";
         }
     }
 
@@ -80,9 +80,20 @@ public class PrescriptionController {
             return "edit-prescription";
         }
     }
+
+    // 🗑️ Xoá đơn thuốc
     @GetMapping("/delete/{id}")
     public String deletePrescription(@PathVariable("id") Long id) {
         prescriptionService.deletePrescriptionById(id);
-        return "redirect:/prescriptions/list";
+        return "redirect:/prescriptions";
+    }
+
+    // 🔍 Tìm kiếm đơn thuốc
+    @GetMapping("/search")
+    public String searchPrescriptions(@RequestParam("keyword") String keyword, Model model) {
+        List<Prescription> results = prescriptionService.searchPrescriptions(keyword);
+        model.addAttribute("prescriptions", results);
+        model.addAttribute("keyword", keyword);
+        return "prescriptions"; // đồng nhất tên view
     }
 }
