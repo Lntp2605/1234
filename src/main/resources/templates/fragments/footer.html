@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="siteFooter">
+  <footer class="footer">
+    <div class="footer-column">
+      <h3>Y HỌC</h3>
+      <p>Tiên phong trong chất lượng y tế vượt trội, chăm sóc đáng tin cậy.</p>
+    </div>
+    <div class="footer-column">
+      <h3>DỊCH VỤ</h3>
+      <ul>
+        <li><a th:href="@{/}">Trang chủ</a></li>
+        <li><a th:href="@{/about}">Giới thiệu</a></li>
+        <li><a th:href="@{/patients}">Quản lý bệnh nhân</a></li>
+        <li><a th:href="@{/doctors-mgmt}">Quản lý bác sĩ</a></li>
+        <li><a th:href="@{/departments}">Quản lý khoa</a></li>
+        <li><a th:href="@{/examinations}">Quản lý khám bệnh</a></li>
+        <li><a th:href="@{/prescriptions}">Quản lý đơn thuốc</a></li>
+        <li><a th:href="@{/admissions}">Quản lý nhập viện</a></li>
+        <li><a th:href="@{/invoices}">Quản lý hóa đơn</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h3>LIÊN HỆ VỚI CHÚNG TÔI</h3>
+      <p>Phone: 0934303400</p>
+      <p>Email: phucqwer1807@gmail.com</p>
+      <p>Address: 256 the west, cầu giấy</p>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2021 Hospital’s name All Rights Reserved by PNTEC-LTD</p>
+      <div class="social-icons">
+        <i class="fab fa-facebook-f" aria-label="Facebook"></i>
+        <i class="fab fa-twitter" aria-label="Twitter"></i>
+        <i class="fab fa-instagram" aria-label="Instagram"></i>
+      </div>
+    </div>
+  </footer>
+</th:block>
+</body>
+</html>

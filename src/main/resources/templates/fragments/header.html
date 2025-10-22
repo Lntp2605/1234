@@ -1,10 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
+<th:block th:fragment="siteHeader">
+  <div class="top-bar">
+    <div class="top-bar-item"><i class="fas fa-phone-alt icon"></i> 094303400</div>
+    <div class="top-bar-item"><i class="fas fa-clock icon"></i> Mon - Fri: 9:00 AM - 5:00 PM</div>
+    <div class="top-bar-item"><i class="fas fa-map-marker-alt icon"></i> 256 the west, cầu giấy</div>
+  </div>
 
+  <nav class="navbar">
+    <div class="logo">Hospital</div>
+    <div class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></div>
+
+    <ul class="nav-menu" id="nav-menu">
+      <li><a th:href="@{/}">Trang chủ</a></li>
+      <li><a th:href="@{/about}">Giới thiệu</a></li>
+      <li class="has-dropdown">
+        <a th:href="@{/services}" id="services-link">
+          Dịch vụ <i class="fas fa-chevron-down caret" aria-hidden="true"></i>
+        </a>
+        <ul class="dropdown" id="services-dropdown" aria-label="Danh sách dịch vụ" aria-expanded="false">
+          <li><a th:href="@{/patients}">Quản lý bệnh nhân</a></li>
+          <li><a th:href="@{/doctors-mgmt}">Quản lý bác sĩ</a></li>
+          <li><a th:href="@{/departments}">Quản lý khoa</a></li>
+          <li><a th:href="@{/examinations}">Quản lý khám bệnh</a></li>
+          <li><a th:href="@{/prescriptions}">Quản lý đơn thuốc</a></li>
+          <li><a th:href="@{/admissions}">Quản lý nhập viện</a></li>
+          <li><a th:href="@{/invoices}">Quản lý hóa đơn</a></li>
+        </ul>
+      </li>
+    </ul>
+
+    <div class="nav-right">
+
+      <!-- CHƯA ĐĂNG NHẬP -->
+      <div class="auth-actions" sec:authorize="isAnonymous()">
+        <a th:href="@{/login}" class="login-btn">Đăng nhập</a>
+        <a th:href="@{/register}" class="register-btn">Đăng ký</a>
+      </div>
+
+      <!-- ĐÃ ĐĂNG NHẬP -->
+      <div class="auth-only" sec:authorize="isAuthenticated()" style="display:flex; align-items:center; gap:12px;">
+        <div class="user-profile">
+          <i class="fas fa-user icon-user" style="margin-right:6px;"></i>
+          <!-- Hiển thị username/email -->
+          <span class="user-name" sec:authentication="name">User</span>
+        </div>
+
+        <div class="notification">
+          <i class="fas fa-bell icon-bell"></i>
+          <span class="notification-dot" id="notification-dot"></span>
+          <div class="notification-dropdown" id="notification-dropdown">
+            <div class="notification-item">Appointment at 2 PM <span>10:00 AM</span></div>
+            <div class="notification-item">New message from Dr. Smith <span>9:30 AM</span></div>
+            <button class="mark-read-btn" type="button">Mark all as read</button>
+          </div>
+        </div>
+
+        <!-- Logout: nếu Security của bạn đang yêu cầu POST /logout, hãy dùng form POST bên dưới -->
+        <a th:href="@{/logout}" class="logout-btn">Thoát</a>
+        <!-- Hoặc (nếu cần POST + CSRF):
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+          <button type="submit" class="logout-btn" style="background:none;border:none;cursor:pointer;">Thoát</button>
+        </form>
+        -->
+      </div>
+    </div>
+  </nav>
+</th:block>
 </body>
 </html>

@@ -18,7 +18,10 @@ public class PatientController {
     public PatientController(PatientService patientService) {
         this.patientService = patientService;
     }
-
+    @GetMapping("/patients")
+    public String getPatients() {
+        return "patients"; // trỏ tới templates/patients.html
+    }
     // Hiển thị form chỉnh sửa
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
