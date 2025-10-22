@@ -52,4 +52,18 @@ public class DepartmentController {
         return "departments/list"; // Trang hiển thị danh sách kết quả
     }
 
+
+    @PostMapping("/update/{id}")
+    public String updateDepartment(@PathVariable("id") Long id,
+                                   @ModelAttribute("department") Department department,
+                                   Model model) {
+        try {
+            departmentService.updateDepartment(id, department);
+            model.addAttribute("message", "Cập nhật khoa thành công!");
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("message", e.getMessage());
+        }
+        return "departments/edit-department";
+    }
+
 }

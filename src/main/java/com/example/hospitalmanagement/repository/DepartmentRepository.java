@@ -9,10 +9,10 @@ import java.util.List;
 
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
+    boolean existsByDepartmentName(String departmentName);
     @Query("SELECT d FROM Department d WHERE " +
             "LOWER(d.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(d.head) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Department> searchDepartments(@Param("keyword") String keyword);
 
-    boolean existsByDepartmentName(String departmentName);
 }
