@@ -1,24 +1,55 @@
 package com.example.hospitalmanagement.controller;
-
+import java.util.List;
 import com.example.hospitalmanagement.model.Patient;
 import com.example.hospitalmanagement.service.PatientService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/patients")
 public class PatientController {
-    @GetMapping("/patients")
-    public String getPatients() {
-        return "patients"; // trỏ tới templates/patients.html
+
+    private final PatientService patientService;
+
+    public PatientController(PatientService patientService) {
+        this.patientService = patientService;
     }
 
-    @Autowired
-    private PatientService patientService;
+    // Hiển thị form chỉnh sửa
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        patientService.getPatientById(id).ifPresent(patient -> model.addAttribute("patient", patient));
+        return "edit-patient"; // Trả về view edit-patient.html
+    }
+
+    // Xử lý form chỉnh sửa
+    @PostMapping("/update")
+    public String updatePatient(@ModelAttribute("patient") Patient patient) {
+        patientService.updatePatient(patient);
+        return "redirect:/patients"; // Sau khi sửa xong quay về danh sách bệnh nhân
+    }
+    @GetMapping("/delete/{id}")
+    public String deletePatient(@PathVariable("id") Long id) {
+        boolean isDeleted = patientService.deletePatientById(id);
+        if (isDeleted) {
+            return "redirect:/patients/list"; // trang danh sách bệnh nhân
+        } else {
+            return "redirect:/patients/error"; // hoặc trang báo lỗi nếu không tìm thấy
+        }
+    }
+    @GetMapping("/search")
+    public String searchPatients(@RequestParam("keyword") String keyword, Model model) {
+        List<Patient> results = patientService.searchPatients(keyword);
+        model.addAttribute("patients", results);
+        model.addAttribute("keyword", keyword);
+        return "patients/list";
+    }
+
+
 
     @GetMapping
     public String listPatients(Model model) {
