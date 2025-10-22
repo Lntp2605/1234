@@ -22,5 +22,4 @@ public class Examination {
     private String diagnosis;
     private double cost;
 
-
 }

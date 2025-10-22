@@ -7,9 +7,9 @@ import com.example.hospitalmanagement.repository.DoctorRepository;
 import com.example.hospitalmanagement.repository.PatientRepository;
 import com.example.hospitalmanagement.repository.ExaminationRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.Optional;
+import java.util.List;
 
 @Service
 public class ExaminationService {
@@ -25,7 +25,7 @@ public class ExaminationService {
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
     }
-
+// add examination
     public Examination addExamination(Long patientId, Long doctorId, Date date,
                                       String diagnosis, double cost) {
 
@@ -44,5 +44,9 @@ public class ExaminationService {
         examination.setCost(cost);
 
         return examinationRepository.save(examination);
+    }
+    // list
+    public List<Examination> getAllExaminations() {
+        return examinationRepository.findAll();
     }
 }
