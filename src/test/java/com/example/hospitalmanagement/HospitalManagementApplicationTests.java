@@ -66,5 +66,12 @@ class HospitalManagementApplicationTests {
 //        System.out.println("Chuyên môn: " + result.getSpecialty());
 //        System.out.println("Email: " + result.getEmail());
 //    }
+@Test
+void testDeleteDoctor() {
+    Long doctorId = 1L; // chắc chắn ID này có trong DB
+
+    // Gọi xóa
+    doctorService.deleteDoctor(doctorId);
+}
 
 }

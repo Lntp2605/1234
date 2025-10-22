@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/doctors")
-public class DoctorController {
+public class
+DoctorController {
 
     @Autowired
     private DoctorService doctorService;

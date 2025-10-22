@@ -9,12 +9,15 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Optional;
 
-
+import org.springframework.stereotype.Service;
+import com.example.hospitalmanagement.repository.DoctorRepository;
+import com.example.hospitalmanagement.model.Doctor;
+import lombok.RequiredArgsConstructor;
 @Service
 public class DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
-
+//list
     public List<Doctor> getAllDoctors() {
         return doctorRepository.findAll(Sort.by(Sort.Direction.ASC, "doctorId"));
     }
@@ -52,5 +55,12 @@ public class DoctorService {
         existingDoctor.setWorkSchedule(updatedDoctor.getWorkSchedule());
 
         return doctorRepository.save(existingDoctor);
+    }
+
+    public DoctorService(DoctorRepository doctorRepository) {
+        this.doctorRepository = doctorRepository;
+    }
+    public void deleteDoctor(Long id) {
+        doctorRepository.deleteById(id);
     }
 }
