@@ -66,4 +66,16 @@ public class ExaminationController {
 
         return "edit-examination";
     }
+
+    @GetMapping("/search")
+    public String searchExaminations(
+            @RequestParam(required = false) Long patientId,
+            @RequestParam(required = false) Long doctorId,
+            @RequestParam(required = false) String diagnosis,
+            Model model
+    ) {
+        List<Examination> results = examinationService.searchExaminations(patientId, doctorId, diagnosis);
+        model.addAttribute("results", results);
+        return "examination-search"; // tên file view
+    }
 }

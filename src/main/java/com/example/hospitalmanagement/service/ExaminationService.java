@@ -75,4 +75,17 @@ public class ExaminationService {
 
         return examinationRepository.save(existing);
     }
+// delete examination
+    public void deleteExamination(Long examinationId) {
+        // Kiểm tra xem bản ghi có tồn tại không
+        Examination existing = examinationRepository.findById(examinationId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy bản ghi khám bệnh với ID: " + examinationId));
+
+        // Xóa bản ghi
+        examinationRepository.delete(existing);
+    }
+    //search
+    public List<Examination> searchExaminations(Long patientId, Long doctorId, String diagnosis) {
+        return examinationRepository.searchExaminations(patientId, doctorId, diagnosis);
+    }
 }
