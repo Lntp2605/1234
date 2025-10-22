@@ -35,4 +35,35 @@ public class ExaminationController {
         model.addAttribute("examinations", examinations);
         return "examinations/list"; // view HTML hiển thị danh sách
     }
+    // 🟢 Hiển thị form chỉnh sửa
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        Examination examination = examinationService.getExaminationById(id);
+        model.addAttribute("examination", examination);
+        return "edit-examination"; // trả về view edit-examination.html
+    }
+
+    // 🟢 Xử lý cập nhật thông tin khám bệnh
+    @PostMapping("/update")
+    public String updateExamination(
+            @RequestParam Long examinationId,
+            @RequestParam Long patientId,
+            @RequestParam Long doctorId,
+            @RequestParam Date date,
+            @RequestParam String diagnosis,
+            @RequestParam double cost,
+            Model model) {
+
+        try {
+            Examination updated = examinationService.updateExamination(
+                    examinationId, patientId, doctorId, date, diagnosis, cost);
+
+            model.addAttribute("successMessage", "Cập nhật thông tin khám bệnh thành công!");
+            model.addAttribute("examination", updated);
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Lỗi khi cập nhật: " + e.getMessage());
+        }
+
+        return "edit-examination";
+    }
 }
