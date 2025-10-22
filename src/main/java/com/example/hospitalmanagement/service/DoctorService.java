@@ -2,32 +2,23 @@ package com.example.hospitalmanagement.service;
 
 import com.example.hospitalmanagement.model.Doctor;
 import com.example.hospitalmanagement.repository.DoctorRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
-
 import java.util.List;
+import java.util.Optional;
+
 
 @Service
-@RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class DoctorService {
-
-    private final DoctorRepository doctorRepository;
-
-
-    public List<Doctor> getAllDoctors() {
-        //  gọi findAll + Sort
-        return doctorRepository.findAll(Sort.by(Sort.Direction.ASC, "doctorId"));
-
-    }
-
     @Autowired
     private DoctorRepository doctorRepository;
 
+    public List<Doctor> getAllDoctors() {
+        return doctorRepository.findAll(Sort.by(Sort.Direction.ASC, "doctorId"));
+    }
+// add doctor
     public Doctor addDoctor(Doctor doctor) {
         if (!StringUtils.hasText(doctor.getName()) ||
                 !StringUtils.hasText(doctor.getPhoneNumber()) ||
@@ -44,5 +35,22 @@ public class DoctorService {
         }
 
         return doctorRepository.save(doctor);
+    }
+    // Cập nhật thông tin bác sĩ
+    public Doctor updateDoctor(Long id, Doctor updatedDoctor) {
+        Optional<Doctor> optionalDoctor = doctorRepository.findById(id);
+        if (optionalDoctor.isEmpty()) {
+            throw new RuntimeException("Doctor not found with ID: " + id);
+        }
+
+        Doctor existingDoctor = optionalDoctor.get();
+        existingDoctor.setName(updatedDoctor.getName());
+        existingDoctor.setSpecialty(updatedDoctor.getSpecialty());
+        existingDoctor.setDiploma(updatedDoctor.getDiploma());
+        existingDoctor.setPhoneNumber(updatedDoctor.getPhoneNumber());
+        existingDoctor.setEmail(updatedDoctor.getEmail());
+        existingDoctor.setWorkSchedule(updatedDoctor.getWorkSchedule());
+
+        return doctorRepository.save(existingDoctor);
     }
 }

@@ -25,4 +25,15 @@ public class DoctorController {
         }
         return "doctors/add-doctor";
     }
+    // Thêm mới bác sĩ
+    @PostMapping("/add")
+    public Doctor addDoctor(@RequestBody Doctor doctor) {
+        return doctorService.addDoctor(doctor);
+    }
+
+    // Cập nhật thông tin bác sĩ
+    @PutMapping("/update/{id}")
+    public Doctor updateDoctor(@PathVariable Long id, @RequestBody Doctor doctor) {
+        return doctorService.updateDoctor(id, doctor);
+    }
 }
