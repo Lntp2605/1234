@@ -20,12 +20,14 @@ public class PrescriptionService {
         this.examinationRepository = examinationRepository;
     }
 
+    // Lấy toàn bộ danh sách
     public List<Prescription> getAllPrescriptions() {
         return prescriptionRepository.findAll();
     }
 
+    // Thêm đơn thuốc
     public void addPrescription(Long examinationId, String medication, String dosage,
-                                int amount, double price) throws IllegalArgumentException {
+                                int amount, double price) {
         if (medication == null || medication.trim().isEmpty()) {
             throw new IllegalArgumentException("Medication cannot be empty.");
         }
@@ -39,13 +41,49 @@ public class PrescriptionService {
             throw new IllegalArgumentException("Price cannot be negative.");
         }
 
-        Optional<Examination> examinationOpt = examinationRepository.findById(examinationId);
-        if (examinationOpt.isEmpty()) {
-            throw new IllegalArgumentException("Invalid examination ID.");
-        }
+        Examination examination = examinationRepository.findById(examinationId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid examination ID."));
 
         Prescription prescription = new Prescription();
-        prescription.setExamination(examinationOpt.get());
+        prescription.setExamination(examination);
+        prescription.setMedication(medication);
+        prescription.setDosage(dosage);
+        prescription.setAmount(amount);
+        prescription.setPrice(price);
+
+        prescriptionRepository.save(prescription);
+    }
+
+    // Lấy đơn thuốc theo ID
+    public Prescription getPrescriptionById(Long id) {
+        return prescriptionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Prescription not found."));
+    }
+
+    // Cập nhật đơn thuốc
+    public void updatePrescription(Long prescriptionId, Long examinationId,
+                                   String medication, String dosage,
+                                   int amount, double price) {
+
+        Prescription prescription = getPrescriptionById(prescriptionId);
+
+        if (medication == null || medication.trim().isEmpty()) {
+            throw new IllegalArgumentException("Medication cannot be empty.");
+        }
+        if (dosage == null || dosage.trim().isEmpty()) {
+            throw new IllegalArgumentException("Dosage cannot be empty.");
+        }
+        if (amount < 1) {
+            throw new IllegalArgumentException("Amount must be at least 1.");
+        }
+        if (price < 0) {
+            throw new IllegalArgumentException("Price cannot be negative.");
+        }
+
+        Examination examination = examinationRepository.findById(examinationId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid examination ID."));
+
+        prescription.setExamination(examination);
         prescription.setMedication(medication);
         prescription.setDosage(dosage);
         prescription.setAmount(amount);
