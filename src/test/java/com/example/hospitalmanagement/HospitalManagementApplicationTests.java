@@ -13,5 +13,14 @@ class HospitalManagementApplicationTests {
 
     @Autowired
     private DepartmentService departmentService;
+    @Test
+    void testSearchDepartments() {
+        String keyword = "ngoại"; // từ khóa tìm kiếm
+        List<Department> results = departmentService.searchDepartments(keyword);
 
+        System.out.println("=== Kết quả tìm kiếm cho từ khóa '" + keyword + "' ===");
+        for (Department d : results) {
+            System.out.println("ID: " + d.getDepartmentId() + ", Tên: " + d.getDepartmentName() + ", Trưởng khoa: " + d.getHeadOfDepartment());
+        }
+    }
 }

@@ -31,10 +31,13 @@ public class DepartmentController {
     }
 
     // Lấy danh sách khoa
-    @GetMapping
-    public List<Department> getAllDepartments() {
-        return departmentService.getAllDepartments();
+    @GetMapping("/list")
+    public String listDepartments(Model model) {
+        List<Department> departments = departmentService.getAllDepartments();
+        model.addAttribute("departments", departments);
+        return "departments/list";
     }
+
     @GetMapping("/delete/{id}")
     public String deleteDepartment(@PathVariable("id") Long id) {
         boolean isDeleted = departmentService.deleteDepartmentById(id);

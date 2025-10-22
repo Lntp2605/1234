@@ -8,9 +8,9 @@ import java.util.List;
 
 @Service
 public class DepartmentService {
-@Autowired
     private final DepartmentRepository departmentRepository;
 
+    @Autowired
     public DepartmentService(DepartmentRepository departmentRepository) {
         this.departmentRepository = departmentRepository;
     }
