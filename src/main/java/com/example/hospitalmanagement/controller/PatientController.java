@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/patients")
 public class PatientController {
+    @GetMapping("/patients")
+    public String getPatients() {
+        return "patients"; // trỏ tới templates/patients.html
+    }
 
     @Autowired
     private PatientService patientService;

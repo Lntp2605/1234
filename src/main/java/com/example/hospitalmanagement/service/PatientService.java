@@ -1,14 +1,11 @@
 package com.example.hospitalmanagement.service;
-
-import com.example.hospitalmanagement.model.Patient;
+import java.util.List;
+import org.springframework.util.StringUtils;
+import java.util.regex.Pattern;
 import com.example.hospitalmanagement.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import java.util.List;
-import java.util.regex.Pattern;
-
+import com.example.hospitalmanagement.model.Patient;
 @Service
 public class PatientService {
 
