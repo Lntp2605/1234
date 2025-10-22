@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @Controller
 @RequestMapping("/doctors")
@@ -37,5 +38,27 @@ DoctorController {
     public Doctor updateDoctor(@PathVariable Long id, @RequestBody Doctor doctor) {
         return doctorService.updateDoctor(id, doctor);
     }
+
+    // Xóa bác sĩ
+    @GetMapping("/delete/{id}")
+    public String deleteDoctor(@PathVariable("id") Long id, Model model) {
+        try {
+            doctorService.deleteDoctor(id);
+            model.addAttribute("successMessage", "Xóa thành công!");
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Không thể xóa bác sĩ có ID: " + id);
+        }
+        return "redirect:/doctors";
+    }
+
+    // Tìm kiếm bác sĩ theo từ khóa (tên, chuyên môn, email)
+    @GetMapping("/search")
+    public String searchDoctors(@RequestParam("keyword") String keyword, Model model) {
+        List<Doctor> doctors = doctorService.searchDoctors(keyword);
+        model.addAttribute("doctors", doctors);
+        model.addAttribute("keyword", keyword);
+        return "doctors/list"; // dùng lại trang danh sách
+    }
+
 
 }
