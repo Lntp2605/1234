@@ -1,142 +1,334 @@
-/* ==========================================================================
-   PATIENTS UI — modern, clean, accessible
-   ========================================================================== */
+/* =========================
+   PATIENT MANAGEMENT SPECIFIC STYLES
+   ========================= */
 
-/* 1) TOKENS */
-:root{
-  --bg:        #f6f7fb;
-  --card:      #ffffff;
-  --text:      #1f2a44;
-  --muted:     #6b7280;
-  --primary:   #2563eb;
-  --primary-2: #3b82f6;
-  --accent:    #22c55e;
-  --border:    #e5e7eb;
-  --row:       #f9fbff;
-  --row-hover: #eef4ff;
-
-  --shadow-1:  0 6px 24px rgba(16,24,40,.06), 0 2px 8px rgba(16,24,40,.04);
-  --shadow-2:  0 12px 32px rgba(16,24,40,.08), 0 6px 12px rgba(16,24,40,.06);
-  --radius:    16px;
-  --radius-sm: 12px;
+/* Override Bootstrap and Custom Variables */
+:root {
+  --patient-primary: #0066cc;
+  --patient-success: #28a745;
+  --patient-warning: #ffc107;
+  --patient-danger: #dc3545;
+  --patient-info: #17a2b8;
+  --patient-light: #f8f9fa;
+  --patient-dark: #343a40;
 }
 
-/* 2) BASE */
-*{box-sizing:border-box}
-html,body{
-  margin:0; padding:0; background:var(--bg); color:var(--text);
-  font-family: Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-}
-a{color:inherit; text-decoration:none}
-.u-bg{background:var(--bg)}
-.container{max-width:1240px; margin:24px auto; padding:0 16px}
-
-/* 3) PAGE LAYOUT */
-.page{display:flex; flex-direction:column; gap:18px}
-.page-hero{display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap}
-.title{font-size:32px; line-height:1.2; margin:0 0 4px; letter-spacing:.2px}
-.subtitle{margin:0; color:var(--muted); font-size:14px}
-
-/* Toolbar (search/filters – UI only) */
-.toolbar{display:flex; gap:12px; align-items:center}
-.input{
-  display:flex; align-items:center; gap:8px;
-  background:#fff; border:1px solid var(--border); border-radius:12px;
-  padding:10px 12px; min-width:260px; box-shadow: var(--shadow-1);
-}
-.input input{
-  border:none; outline:none; background:transparent; width:180px; color:#475569;
-}
-.input i{color:#94a3b8}
-.btn-outline{
-  border:1px solid var(--border); background:#fff; color:#334155;
-  height:40px; padding:0 14px; border-radius:12px; cursor:not-allowed; opacity:.65;
+/* Patient Avatar */
+.patient-avatar {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 4) CARD */
-.card{
-  background:var(--card); border:1px solid var(--border);
-  border-radius: var(--radius); padding:12px;
-}
-.card-elevated{ box-shadow: var(--shadow-2); }
-
-/* 5) TABLE */
-.table-wrap{ width:100%; overflow:auto; border-radius:var(--radius); }
-.table{ width:100%; border-collapse:separate; border-spacing:0; }
-
-/* table header */
-.table thead th{
-  text-align:left; font-weight:600; font-size:14px; letter-spacing:.2px;
-  padding:14px 14px; color:#0f172a;
-  background:linear-gradient(180deg, #fff, #f9fbff);
-  border-bottom:1px solid var(--border);
-  position:sticky; top:0; z-index:1;
+/* Patient Status Badges */
+.badge.bg-success {
+  background-color: var(--patient-success) !important;
+  color: white !important;
 }
 
-/* table rows */
-.table tbody td{
-  padding:14px; border-bottom:1px solid var(--border); font-size:14px; color:#334155;
-  background:#fff;
-}
-.table tbody tr:nth-child(even) td{ background:var(--row); }
-.table tbody tr:hover td{ background:var(--row-hover); }
-
-/* first & last cell rounding (visual nicety on hover/scroll) */
-.table tbody tr td:first-child{ border-left:1px solid transparent; }
-.table tbody tr td:last-child{ border-right:1px solid transparent; }
-
-/* sort button */
-.sort-btn{
-  display:inline-flex; align-items:center; gap:8px;
-  background:#fff; border:1px solid var(--border); color:#0f172a;
-  padding:8px 12px; border-radius:10px; cursor:pointer;
-  transition: all .15s ease-in-out; box-shadow: var(--shadow-1);
-}
-.sort-btn:hover{ transform: translateY(-1px); border-color:#d4d8e0 }
-.sort-btn:focus{ outline:3px solid rgba(37,99,235,.15); outline-offset:2px }
-.sort-btn i{ color:var(--primary) }
-
-/* 6) PAGINATION */
-.pagination{
-  display:flex; gap:8px; justify-content:flex-end; align-items:center;
-  padding:14px 8px 6px; margin-top:10px;
-}
-.page-btn{
-  min-width:38px; height:38px; padding:0 12px;
-  display:inline-flex; align-items:center; justify-content:center;
-  background:#fff; border:1px solid var(--border); border-radius:12px;
-  cursor:pointer; font-size:14px; transition: all .15s ease-in-out; box-shadow: var(--shadow-1);
-}
-.page-btn:hover{ transform: translateY(-1px); background:#f4f7ff }
-.page-btn.active{ background:var(--primary); color:#fff; border-color:var(--primary) }
-.page-btn[disabled]{ opacity:.5; cursor:not-allowed }
-
-/* 7) TIPS BAR */
-.tips{
-  display:flex; align-items:center; gap:10px; color:#475569; font-size:13px;
-  background:linear-gradient(90deg, #eef4ff, #f7fff7); padding:10px 12px;
-  border:1px solid #e6eefc; border-radius:12px;
-  box-shadow: 0 2px 10px rgba(16,24,40,.04);
+.badge.bg-warning {
+  background-color: var(--patient-warning) !important;
+  color: #000 !important;
 }
 
-/* 8) ACCESSIBILITY */
-.sr-only{
-  position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
-  clip:rect(0,0,0,0); white-space:nowrap; border:0;
+.badge.bg-danger {
+  background-color: var(--patient-danger) !important;
+  color: white !important;
 }
 
-/* 9) RESPONSIVE */
-@media (max-width: 900px){
-  .title{font-size:28px}
-  .toolbar{width:100%}
-  .hero-right{width:100%}
+.badge.bg-secondary {
+  background-color: #6c757d !important;
+  color: white !important;
 }
-@media (max-width: 720px){
-  .table thead th:nth-child(5),
-  .table tbody td:nth-child(5),
-  .table thead th:nth-child(7),
-  .table tbody td:nth-child(7){
-    display:none; /* ẩn Địa chỉ & Tiền sử bệnh trên màn nhỏ */
+
+.badge.bg-info {
+  background-color: var(--patient-info) !important;
+  color: white !important;
+}
+
+/* Patient Table Enhancements */
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 102, 204, 0.05) !important;
+}
+
+.table th {
+  background-color: var(--patient-light) !important;
+  border-top: none !important;
+  font-weight: 600 !important;
+  color: var(--patient-dark) !important;
+  white-space: nowrap;
+  font-size: 0.875rem;
+}
+
+.table td {
+  vertical-align: middle;
+  font-size: 0.875rem;
+}
+
+/* Border Left Cards for Stats */
+.border-left-primary {
+  border-left: 4px solid var(--patient-primary) !important;
+}
+
+.border-left-success {
+  border-left: 4px solid var(--patient-success) !important;
+}
+
+.border-left-info {
+  border-left: 4px solid var(--patient-info) !important;
+}
+
+.border-left-warning {
+  border-left: 4px solid var(--patient-warning) !important;
+}
+
+/* Text utilities */
+.text-xs {
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.text-gray-800 {
+  color: var(--patient-dark) !important;
+}
+
+.text-gray-300 {
+  color: #d1d3e2 !important;
+}
+
+/* Action Buttons */
+.btn-group .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  margin: 0 1px;
+}
+
+.btn-outline-info:hover {
+  background-color: var(--patient-info);
+  border-color: var(--patient-info);
+  color: white;
+}
+
+.btn-outline-warning:hover {
+  background-color: var(--patient-warning);
+  border-color: var(--patient-warning);
+  color: #000;
+}
+
+.btn-outline-danger:hover {
+  background-color: var(--patient-danger);
+  border-color: var(--patient-danger);
+  color: white;
+}
+
+/* Search Form Enhancements */
+.form-label {
+  font-weight: 600 !important;
+  color: var(--patient-dark) !important;
+  margin-bottom: 0.5rem !important;
+  font-size: 0.875rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--patient-primary) !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25) !important;
+}
+
+/* Modal Enhancements */
+.modal-header {
+  background-color: var(--patient-primary) !important;
+  color: white !important;
+  border-bottom: none !important;
+}
+
+.modal-header .btn-close {
+  filter: invert(1) !important;
+}
+
+/* Gender Icons */
+.text-primary .fas.fa-mars {
+  color: var(--patient-primary) !important;
+}
+
+.text-danger .fas.fa-venus {
+  color: var(--patient-danger) !important;
+}
+
+/* Card Styling */
+.card {
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+  background-color: var(--patient-light);
+  border-bottom: 1px solid #dee2e6;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Stats Cards */
+.stats-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Pagination Styling */
+.pagination .page-link {
+  color: var(--patient-primary);
+  border-color: #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--patient-primary);
+  border-color: var(--patient-primary);
+}
+
+.pagination .page-link:hover {
+  color: var(--patient-primary);
+  background-color: #e9ecef;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-group .btn {
+    margin: 0.125rem 0;
+    border-radius: 0.25rem !important;
+    width: 100%;
+  }
+
+  .table-responsive {
+    font-size: 0.8rem;
+  }
+
+  .patient-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  /* Hide some columns on mobile */
+  .table th:nth-child(6),
+  .table td:nth-child(6) {
+    display: none; /* Hide address column */
+  }
+}
+
+@media (max-width: 576px) {
+  .card-header .d-flex {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  .card-header .d-flex > div:last-child {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+
+  .form-select[style*="width"] {
+    width: 100% !important;
+  }
+
+  .stats-card-number {
+    font-size: 1.5rem !important;
+  }
+
+  /* Stack search form vertically */
+  .row .col-md-3,
+  .row .col-md-2 {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Loading States */
+.table tbody tr.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.btn.loading {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.btn.loading::after {
+  content: "";
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  margin-left: 0.5rem;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s ease infinite;
+}
+
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* Print Styles for Patient List */
+@media print {
+  .btn,
+  .form-control,
+  .form-select,
+  .modal,
+  .dropdown,
+  .sidebar {
+    display: none !important;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #000;
+    break-inside: avoid;
+  }
+
+  .table {
+    font-size: 0.7rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.25rem;
+  }
+
+  .badge {
+    border: 1px solid #000;
+    color: #000 !important;
+    background-color: transparent !important;
+  }
+
+  .content-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
   }
 }

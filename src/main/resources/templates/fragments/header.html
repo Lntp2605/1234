@@ -1,74 +1,182 @@
 <!DOCTYPE html>
 <html lang="vi"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <body>
 <th:block th:fragment="siteHeader">
-  <div class="top-bar">
-    <div class="top-bar-item"><i class="fas fa-phone-alt icon"></i> 094303400</div>
-    <div class="top-bar-item"><i class="fas fa-clock icon"></i> Mon - Fri: 9:00 AM - 5:00 PM</div>
-    <div class="top-bar-item"><i class="fas fa-map-marker-alt icon"></i> 256 the west, cầu giấy</div>
+  <!-- Top notification bar -->
+  <div class="top-admin-bar bg-primary text-white py-2">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center">
+        <i class="fas fa-hospital me-2"></i>
+        <span class="fw-medium">Hệ thống Quản lý Bệnh viện</span>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center text-white-50">
+          <i class="fas fa-clock me-1"></i>
+          <span id="current-time" class="small"></span>
+        </div>
+        <div class="d-flex align-items-center text-white-50">
+          <i class="fas fa-calendar-day me-1"></i>
+          <span id="current-date" class="small"></span>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <nav class="navbar">
-    <div class="logo">Hospital</div>
-    <div class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></div>
+  <!-- Main navigation header -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+    <div class="container-fluid">
+      <!-- Brand/Logo -->
+      <a class="navbar-brand d-flex align-items-center fw-bold text-primary" th:href="@{/}">
+        <i class="fas fa-heartbeat me-2 fs-4"></i>
+        <span class="fs-5">MediCare Admin</span>
+      </a>
 
-    <ul class="nav-menu" id="nav-menu">
-      <li><a th:href="@{/}">Trang chủ</a></li>
-      <li><a th:href="@{/about}">Giới thiệu</a></li>
-      <li class="has-dropdown">
-        <a th:href="@{/services}" id="services-link">
-          Dịch vụ <i class="fas fa-chevron-down caret" aria-hidden="true"></i>
-        </a>
-        <ul class="dropdown" id="services-dropdown" aria-label="Danh sách dịch vụ" aria-expanded="false">
-          <li><a th:href="@{/patients}">Quản lý bệnh nhân</a></li>
-          <li><a th:href="@{/doctors-mgmt}">Quản lý bác sĩ</a></li>
-          <li><a th:href="@{/departments}">Quản lý khoa</a></li>
-          <li><a th:href="@{/examinations}">Quản lý khám bệnh</a></li>
-          <li><a th:href="@{/prescriptions}">Quản lý đơn thuốc</a></li>
-          <li><a th:href="@{/admissions}">Quản lý nhập viện</a></li>
-          <li><a th:href="@{/invoices}">Quản lý hóa đơn</a></li>
-        </ul>
-      </li>
-    </ul>
+      <!-- Mobile menu toggle -->
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <div class="nav-right">
+      <!-- Right side navigation -->
+      <div class="navbar-nav ms-auto d-flex flex-row align-items-center">
 
-      <!-- CHƯA ĐĂNG NHẬP -->
-      <div class="auth-actions" sec:authorize="isAnonymous()">
-        <a th:href="@{/login}" class="login-btn">Đăng nhập</a>
-        <a th:href="@{/register}" class="register-btn">Đăng ký</a>
-      </div>
-
-      <!-- ĐÃ ĐĂNG NHẬP -->
-      <div class="auth-only" sec:authorize="isAuthenticated()" style="display:flex; align-items:center; gap:12px;">
-        <div class="user-profile">
-          <i class="fas fa-user icon-user" style="margin-right:6px;"></i>
-          <!-- Hiển thị username/email -->
-          <span class="user-name" sec:authentication="name">User</span>
-        </div>
-
-        <div class="notification">
-          <i class="fas fa-bell icon-bell"></i>
-          <span class="notification-dot" id="notification-dot"></span>
-          <div class="notification-dropdown" id="notification-dropdown">
-            <div class="notification-item">Appointment at 2 PM <span>10:00 AM</span></div>
-            <div class="notification-item">New message from Dr. Smith <span>9:30 AM</span></div>
-            <button class="mark-read-btn" type="button">Mark all as read</button>
+        <!-- Search -->
+        <div class="nav-item me-3">
+          <div class="input-group" style="width: 300px;">
+            <input type="text" class="form-control form-control-sm" placeholder="Tìm kiếm bệnh nhân, bác sĩ...">
+            <button class="btn btn-outline-secondary btn-sm" type="button">
+              <i class="fas fa-search"></i>
+            </button>
           </div>
         </div>
 
-        <!-- Logout: nếu Security của bạn đang yêu cầu POST /logout, hãy dùng form POST bên dưới -->
-        <a th:href="@{/logout}" class="logout-btn">Thoát</a>
-        <!-- Hoặc (nếu cần POST + CSRF):
-        <form th:action="@{/logout}" method="post" style="display:inline;">
-          <button type="submit" class="logout-btn" style="background:none;border:none;cursor:pointer;">Thoát</button>
-        </form>
-        -->
+        <!-- Notifications -->
+        <div class="nav-item dropdown me-3">
+          <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-bell fs-5 text-muted"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+              3
+              <span class="visually-hidden">thông báo mới</span>
+            </span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="notificationDropdown">
+            <li class="dropdown-header">Thông báo mới</li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item d-flex align-items-start" href="#">
+                <i class="fas fa-user-injured text-primary me-2 mt-1"></i>
+                <div>
+                  <div class="fw-medium">Bệnh nhân mới</div>
+                  <small class="text-muted">Nguyễn Văn A vừa đăng ký khám</small>
+                  <small class="text-muted d-block">2 phút trước</small>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-start" href="#">
+                <i class="fas fa-calendar-check text-success me-2 mt-1"></i>
+                <div>
+                  <div class="fw-medium">Lịch hẹn sắp tới</div>
+                  <small class="text-muted">10 lịch hẹn trong 1 giờ tới</small>
+                  <small class="text-muted d-block">15 phút trước</small>
+                </div>
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-center" href="#">Xem tất cả thông báo</a></li>
+          </ul>
+        </div>
+
+        <!-- User menu -->
+        <div class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+              <i class="fas fa-user"></i>
+            </div>
+            <span class="d-none d-md-inline">Admin</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog me-2"></i>Hồ sơ cá nhân</a></li>
+            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Cài đặt</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item" th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+              </a>
+            </li>
+          </ul>
+        </div>
+
       </div>
     </div>
   </nav>
+
+  <!-- Quick stats bar (optional) -->
+  <div class="quick-stats-bar bg-light border-bottom py-2 d-none d-md-block">
+    <div class="container-fluid">
+      <div class="row text-center">
+        <div class="col-md-3">
+          <div class="d-flex align-items-center justify-content-center">
+            <i class="fas fa-users text-primary me-2"></i>
+            <div>
+              <div class="fw-bold">1,234</div>
+              <small class="text-muted">Bệnh nhân</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="d-flex align-items-center justify-content-center">
+            <i class="fas fa-user-md text-success me-2"></i>
+            <div>
+              <div class="fw-bold">45</div>
+              <small class="text-muted">Bác sĩ</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="d-flex align-items-center justify-content-center">
+            <i class="fas fa-calendar-check text-warning me-2"></i>
+            <div>
+              <div class="fw-bold">28</div>
+              <small class="text-muted">Hôm nay</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="d-flex align-items-center justify-content-center">
+            <i class="fas fa-bed text-info me-2"></i>
+            <div>
+              <div class="fw-bold">156</div>
+              <small class="text-muted">Giường trống</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </th:block>
+
+<!-- JavaScript for real-time clock -->
+<script th:fragment="headerScripts">
+  document.addEventListener('DOMContentLoaded', function() {
+    function updateDateTime() {
+      const now = new Date();
+      const timeElement = document.getElementById('current-time');
+      const dateElement = document.getElementById('current-date');
+
+      if (timeElement) {
+        timeElement.textContent = now.toLocaleTimeString('vi-VN');
+      }
+      if (dateElement) {
+        dateElement.textContent = now.toLocaleDateString('vi-VN');
+      }
+    }
+
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+  });
+</script>
+
 </body>
 </html>

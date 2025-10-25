@@ -1,42 +1,486 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Meddical - Home</title>
+  <title>Dashboard - Hệ thống Quản lý Bệnh viện</title>
 
-  <!-- CSS từ static -->
+  <!-- CSS dùng static resource của Spring -->
   <link rel="stylesheet" th:href="@{/css/style.css}"/>
 
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <!-- Bootstrap CSS for better components -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <style>
+    .stats-card {
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+      color: white;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+
+    .stats-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .stats-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transform: translate(50%, -50%);
+    }
+
+    .chart-container {
+      height: 300px;
+      position: relative;
+    }
+  </style>
 </head>
-<body>
 
-  <header th:replace="fragments/header :: siteHeader"></header>
+<body class="d-flex flex-column min-vh-100">
+<!-- Header chung -->
+<header th:replace="fragments/header :: siteHeader" class="sticky-top"></header>
 
-  <section class="hero">
-    <div class="hero-content">
-      <p class="hero-subtitle">CARING FOR LIFE</p>
-      <h1 class="hero-title">Leading the Way in Medical Excellence</h1>
-      <p class="hero-invite">Join us today to manage your appointments online.</p>
-      <button class="cta-btn" type="button">Our Services</button>
-    </div>
-    <div class="hero-image">
-      <div class="image-wrapper">
-        <img th:src="@{/images/doctor.jpg}" alt="Doctor"/>
+<!-- Breadcrumb Section -->
+<div class="breadcrumb-section bg-light py-2">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page">
+          <i class="fas fa-home me-1"></i>Dashboard
+        </li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- Sidebar và Content Layout -->
+<div class="container-fluid flex-grow-1">
+  <div class="row">
+    <!-- Sidebar -->
+    <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" id="sidebarMenu">
+      <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" th:href="@{/}">
+              <i class="fas fa-tachometer-alt me-2"></i>
+              Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/patients}">
+              <i class="fas fa-user-injured me-2"></i>
+              Quản lý Bệnh nhân
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/doctors-mgmt}">
+              <i class="fas fa-user-md me-2"></i>
+              Quản lý Bác sĩ
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/departments}">
+              <i class="fas fa-building me-2"></i>
+              Quản lý Khoa
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/examinations}">
+              <i class="fas fa-stethoscope me-2"></i>
+              Khám bệnh
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/prescriptions}">
+              <i class="fas fa-prescription-bottle-alt me-2"></i>
+              Đơn thuốc
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/admissions}">
+              <i class="fas fa-bed me-2"></i>
+              Nhập viện
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/invoices}">
+              <i class="fas fa-file-invoice-dollar me-2"></i>
+              Hóa đơn
+            </a>
+          </li>
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>Báo cáo</span>
+        </h6>
+        <ul class="nav flex-column mb-2">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-chart-bar me-2"></i>
+              Thống kê tháng
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-chart-line me-2"></i>
+              Báo cáo doanh thu
+            </a>
+          </li>
+        </ul>
       </div>
-    </div>
-  </section>
+    </nav>
 
-  <!-- … bạn có thể đặt Quick Actions, Welcome … ở đây … -->
+    <!-- Main content area -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div class="content-wrapper py-4 fade-in">
 
-  <footer th:replace="fragments/footer :: siteFooter"></footer>
+        <!-- Dashboard Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h1 class="h3 mb-0 text-gray-800">
+              <i class="fas fa-tachometer-alt text-primary me-2"></i>
+              Dashboard
+            </h1>
+            <p class="text-muted mb-0">Tổng quan hệ thống quản lý bệnh viện</p>
+          </div>
+          <div class="d-flex align-items-center">
+            <div class="text-muted me-3">
+              <i class="fas fa-calendar-day me-1"></i>
+              <span id="currentDateTime"></span>
+            </div>
+            <button class="btn btn-primary" onclick="refreshDashboard()">
+              <i class="fas fa-sync-alt me-1"></i>Làm mới
+            </button>
+          </div>
+        </div>
 
-  <!-- JS từ static -->
-  <script th:src="@{/js/demo.js}"></script>
+        <!-- Stats Overview -->
+        <div class="row mb-4">
+          <div class="col-xl-4 col-md-6 mb-4">
+            <div class="stats-card">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="h6 text-uppercase mb-1" style="opacity: 0.8;">Tổng bệnh nhân</div>
+                  <div class="h2 mb-0 fw-bold" th:text="${totalPatients ?: '1,234'}">1,234</div>
+                  <small style="opacity: 0.8;">
+                    <i class="fas fa-arrow-up me-1"></i>+5.2% so với tháng trước
+                  </small>
+                </div>
+                <div class="stats-card-icon">
+                  <i class="fas fa-users" style="opacity: 0.3; font-size: 3rem;"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-4 col-md-6 mb-4">
+            <div class="stats-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="h6 text-uppercase mb-1" style="opacity: 0.8;">Tổng lượt khám</div>
+                  <div class="h2 mb-0 fw-bold" th:text="${todayExaminations ?: '156'}">156</div>
+                  <small style="opacity: 0.8;">
+                    <i class="fas fa-arrow-up me-1"></i>+12.5% so với hôm qua
+                  </small>
+                </div>
+                <div class="stats-card-icon">
+                  <i class="fas fa-stethoscope" style="opacity: 0.3; font-size: 3rem;"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-4 col-md-6 mb-4">
+            <div class="stats-card" style="background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="h6 text-uppercase mb-1" style="opacity: 0.8;">Tổng lượt nhập viện</div>
+                  <div class="h2 mb-0 fw-bold" th:text="${inpatients ?: '89'}">89</div>
+                  <small style="opacity: 0.8;">
+                    <i class="fas fa-arrow-down me-1"></i>-2.1% so với tuần trước
+                  </small>
+                </div>
+                <div class="stats-card-icon">
+                  <i class="fas fa-bed" style="opacity: 0.3; font-size: 3rem;"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts and Tables Row -->
+        <div class="row">
+          <!-- Patient Flow Chart -->
+          <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+              <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">
+                  <i class="fas fa-chart-line me-2"></i>Lượng bệnh nhân theo tháng
+                </h6>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-calendar me-1"></i>2024
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">2024</a></li>
+                    <li><a class="dropdown-item" href="#">2023</a></li>
+                    <li><a class="dropdown-item" href="#">2022</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="patientFlowChart" width="100%" height="40"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Department Summary -->
+          <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+              <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                  <i class="fas fa-building me-2"></i>Thống kê theo khoa
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="departmentChart" width="100%" height="200"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activities and Quick Actions -->
+        <div class="row">
+          <!-- Recent Patients -->
+          <div class="col-12 mb-4">
+            <div class="card shadow mb-4">
+              <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">
+                  <i class="fas fa-user-plus me-2"></i>Danh sách bệnh nhân
+                </h6>
+                <a th:href="@{/patients}" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                    <tr>
+                      <th>Tên bệnh nhân</th>
+                      <th>Căn cước công dân</th>
+                      <th>Số điện thoại</th>
+                      <th>Địa chỉ</th>
+                      <th>Ngày sinh</th>
+                      <th>Tiền sử bệnh</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="patient : ${patients}">
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <i class="fas fa-user-circle fa-2x text-muted me-2"></i>
+                          <div>
+                            <div class="fw-medium" th:text="${patient.name}">Tên bệnh nhân</div>
+                            <small class="text-muted" th:text="'BN' + ${patient.patientId}">BN001</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td th:text="${patient.citizenId}">Căn cước công dân</td>
+                      <td th:text="${patient.phoneNumber}">Số điện thoại</td>
+                      <td th:text="${patient.address}">Địa chỉ</td>
+                      <td th:text="${#temporals.format(patient.birthDate, 'dd-MM-yyyy')}">01-01-2000</td>
+                      <td th:text="${patient.medicalHistory}">Tiền sử bệnh</td>
+                    </tr>
+                    </tbody>
+
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="col-12 mb-4">
+            <div class="card shadow mb-4">
+              <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                  <i class="fas fa-bolt me-2"></i>Thao tác nhanh
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <a th:href="@{/patients/add}" class="btn btn-outline-primary w-100 py-3">
+                      <i class="fas fa-user-plus fa-2x d-block mb-2"></i>
+                      <div class="fw-medium">Thêm bệnh nhân</div>
+                      <small class="text-muted">Đăng ký bệnh nhân mới</small>
+                    </a>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <a th:href="@{/examinations/add}" class="btn btn-outline-success w-100 py-3">
+                      <i class="fas fa-stethoscope fa-2x d-block mb-2"></i>
+                      <div class="fw-medium">Tạo lịch khám</div>
+                      <small class="text-muted">Đặt lịch hẹn mới</small>
+                    </a>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <a th:href="@{/prescriptions/add}" class="btn btn-outline-warning w-100 py-3">
+                      <i class="fas fa-prescription-bottle-alt fa-2x d-block mb-2"></i>
+                      <div class="fw-medium">Kê đơn thuốc</div>
+                      <small class="text-muted">Tạo đơn thuốc mới</small>
+                    </a>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <a th:href="@{/reports}" class="btn btn-outline-info w-100 py-3">
+                      <i class="fas fa-chart-bar fa-2x d-block mb-2"></i>
+                      <div class="fw-medium">Hóa đơn</div>
+                      <small class="text-muted">Tạo hóa đơn mới</small>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Appointments -->
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Footer chung -->
+<footer th:replace="fragments/footer :: siteFooter" class="mt-auto"></footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- JS dùng static resource của Spring -->
+<script th:src="@{/js/demo.js}"></script>
+
+<script>
+  // Update current date time
+  function updateDateTime() {
+    const now = new Date();
+    const options = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    const element = document.getElementById('currentDateTime');
+    if (element) {
+      element.textContent = now.toLocaleDateString('vi-VN', options);
+    }
+  }
+
+  updateDateTime();
+  setInterval(updateDateTime, 60000); // Update every minute
+
+  // Refresh dashboard
+  function refreshDashboard() {
+    location.reload();
+  }
+
+  // Patient Flow Chart
+  const patientFlowCanvas = document.getElementById('patientFlowChart');
+  if (patientFlowCanvas) {
+    const patientFlowCtx = patientFlowCanvas.getContext('2d');
+    new Chart(patientFlowCtx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [{
+          label: 'Bệnh nhân mới',
+          data: [120, 145, 180, 165, 190, 210, 185, 220, 195, 240, 225, 250],
+          borderColor: '#0066cc',
+          backgroundColor: 'rgba(0, 102, 204, 0.1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4
+        }, {
+          label: 'Xuất viện',
+          data: [100, 130, 160, 150, 175, 195, 170, 205, 180, 220, 210, 235],
+          borderColor: '#28a745',
+          backgroundColor: 'rgba(40, 167, 69, 0.1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  // Department Chart
+  const departmentCanvas = document.getElementById('departmentChart');
+  if (departmentCanvas) {
+    const departmentCtx = departmentCanvas.getContext('2d');
+    new Chart(departmentCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Tim mạch', 'Nhi khoa', 'Thần kinh', 'Chấn thương', 'Cấp cứu'],
+        datasets: [{
+          data: [25, 20, 18, 22, 15],
+          backgroundColor: [
+            '#0066cc',
+            '#28a745',
+            '#ffc107',
+            '#17a2b8',
+            '#dc3545'
+          ],
+          borderWidth: 2,
+          borderColor: '#fff'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+          }
+        }
+      }
+    });
+  }
+</script>
+
 </body>
 </html>
