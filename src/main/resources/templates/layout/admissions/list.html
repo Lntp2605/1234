@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Quản lý Khám bệnh - Hệ thống Quản lý Bệnh viện</title>
+
+    <!-- CSS dùng static resource của Spring -->
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/admissions.css}">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+<!-- Header chung -->
+<header th:replace="fragments/header :: siteHeader" class="sticky-top"></header>
+
+<!-- Breadcrumb Section -->
+<div class="breadcrumb-section bg-light py-2">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/}" class="text-decoration-none"><i class="fas fa-home me-1"></i>Trang chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <i class="fas fa-bed me-2"></i>Quản lý Nhập viện
+                </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Sidebar và Content Layout -->
+<div class="container-fluid flex-grow-1">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" id="sidebarMenu">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/patients}">
+                            <i class="fas fa-user-injured me-2"></i>
+                            Quản lý Bệnh nhân
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/doctors-mgmt}">
+                            <i class="fas fa-user-md me-2"></i>
+                            Quản lý Bác sĩ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/departments}">
+                            <i class="fas fa-building me-2"></i>
+                            Quản lý Khoa
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " th:href="@{/examinations}">
+                            <i class="fas fa-stethoscope me-2"></i>
+                            Khám bệnh
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/prescriptions}">
+                            <i class="fas fa-prescription-bottle-alt me-2"></i>
+                            Đơn thuốc
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/admissions}">
+                            <i class="fas fa-bed me-2"></i>
+                            Nhập viện
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/invoices}">
+                            <i class="fas fa-file-invoice-dollar me-2"></i>
+                            Hóa đơn
+                        </a>
+                    </li>
+                </ul>
+
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>Báo cáo</span>
+                </h6>
+                <ul class="nav flex-column mb-2">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            Thống kê tháng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Báo cáo doanh thu
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <main class="col-md-9 col-lg-10 ms-sm-auto px-md-4 mt-4">
+            <div class="header-bar">
+                <h1 class="h3 mb-0 text-gray-800">
+                    <i class="fas fa-bed me-2 text-primary me-2"></i>Danh sách nhập viện
+                </h1>
+                <form th:action="@{/admissions}" method="get" style="display: flex; align-items: center; gap: 8px;">
+                    <input type="text" name="keyword"
+                           placeholder="Tìm theo Mã BN, Khoa/Phòng hoặc Lý do..."
+                           th:value="${keyword}">
+                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                    <a th:if="${keyword}" th:href="@{/admissions}" class="btn btn-secondary">Xóa</a>
+
+                    <!-- 🌟 Nút Thêm mới -->
+                    <a href="http://localhost:8080/admissions/add"
+                       class="btn btn-success"
+                       style="margin-left: 10px; display: flex; align-items: center; gap: 6px;">
+                        <i class="bi bi-plus-circle"></i> Thêm mới
+                    </a>
+                </form>
+            </div>
+
+            <div th:if="${message}" class="alert alert-success text-center" role="alert"
+                 th:text="${message}">
+            </div>
+
+            <!-- Bảng dữ liệu -->
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Mã BN</th>
+                    <th>Tên BN</th>
+                    <th>Khoa/Phòng</th>
+                    <th>
+                        <a th:href="@{/admissions(
+                    page=${currentPage},
+                    keyword=${keyword},
+                    sortField='admissionDate',
+                    sortDir=${reverseSortDir}
+                )}"
+                           style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                            Ngày nhập
+                            <span th:if="${sortDir == 'asc'}">&#9650;</span>  <!-- ▲ -->
+                            <span th:if="${sortDir == 'desc'}">&#9660;</span> <!-- ▼ -->
+                        </a>
+                    </th>
+                    <th>Ngày xuất</th>
+                    <th>Lý do</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="admission : ${admissions}">
+                    <td th:text="${admission.admissionId}"></td>
+                    <td th:text="${admission.patient != null ? admission.patient.patientId : 'N/A'}"></td>
+                    <td th:text="${admission.patient != null ? admission.patient.name : 'N/A'}"></td>
+                    <td th:text="${admission.department != null ? admission.department.departmentName : 'N/A'}"></td>
+                    <td th:text="${#dates.format(admission.admissionDate, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${#dates.format(admission.dischargeDate, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${admission.reasonForAdmission}"></td>
+                    <td>
+                        <a th:href="@{/admissions/delete/{id}(id=${admission.admissionId}, page=${currentPage}, keyword=${keyword})}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Bạn có chắc chắn muốn xóa bản ghi này không?')">
+                            Xóa
+                        </a>
+
+                        <a th:href="@{/admissions/update/{id}(id=${admission.admissionId})}"
+                           class="btn btn-warning btn-sm me-1 d-inline-flex align-items-center">
+                            <i class="fas fa-edit me-1"></i> Sửa
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- Phân trang -->
+            <div class="d-flex justify-content-center mt-4">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admissions(page=${currentPage - 1}, keyword=${keyword})}"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(1, totalPages)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/admissions(page=${i}, keyword=${keyword})}"
+                               th:text="${i}">1</a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/admissions(page=${currentPage + 1}, keyword=${keyword})}"
+                               aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </main>
+
+        <!-- Footer chung -->
+        <footer th:replace="fragments/footer :: siteFooter" class="mt-auto"></footer>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Xác nhận xóa
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Bạn có chắc chắn muốn xóa bác sĩ ? <strong id="patientNameToDelete"></strong>?</p>
+                        <p class="text-warning">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            Hành động này không thể hoàn tác!
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                            <i class="fas fa-trash me-1"></i>Xóa
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- JS dùng static resource của Spring -->
+        <script th:src="@{/js/doctors.js}"></script>
+
+    </div>
+    </div>
+</body>
+</html>

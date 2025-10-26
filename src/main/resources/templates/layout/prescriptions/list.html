@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Quản lý Bệnh nhân - Hệ thống Quản lý Bệnh viện</title>
+    <title>Quản lý Đơn thuốc - Hệ thống Quản lý Bệnh viện</title>
 
     <!-- CSS dùng static resource của Spring -->
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
-    <link rel="stylesheet" th:href="@{/css/patients.css}"/>
+    <link rel="stylesheet" th:href="@{/css/prescriptions.css}"/>
 
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -31,7 +31,7 @@
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a th:href="@{/}" class="text-decoration-none"><i class="fas fa-home me-1"></i>Trang chủ</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    <i class="fas fa-user-injured me-1"></i>Quản lý Bệnh nhân
+                    <i class="fas fa-prescription-bottle-alt me-1"></i>Quản lý Đơn thuốc
                 </li>
             </ol>
         </nav>
@@ -52,7 +52,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" th:href="@{/patients}">
+                        <a class="nav-link" th:href="@{/patients}">
                             <i class="fas fa-user-injured me-2"></i>
                             Quản lý Bệnh nhân
                         </a>
@@ -76,7 +76,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/prescriptions}">
+                        <a class="nav-link active" th:href="@{/prescriptions}">
                             <i class="fas fa-prescription-bottle-alt me-2"></i>
                             Đơn thuốc
                         </a>
@@ -123,14 +123,14 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
                         <h1 class="h3 mb-0 text-gray-800">
-                            <i class="fas fa-user-injured text-primary me-2"></i>
-                            Quản lý Bệnh nhân
+                            <i class="fas fa-prescription-bottle-alt text-primary me-2"></i>
+                            Quản lý Đơn thuốc
                         </h1>
-                        <p class="text-muted mb-0">Quản lý thông tin bệnh nhân trong hệ thống</p>
+                        <p class="text-muted mb-0">Quản lý thông tin đơn thuốc trong hệ thống</p>
                     </div>
                     <div class="d-flex gap-2">
-                        <a th:href="@{/patients/add}" class="btn btn-primary">
-                            <i class="fas fa-plus me-1"></i>Thêm Bệnh nhân
+                        <a th:href="@{/prescriptions/new}" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>Thêm Đơn thuốc
                         </a>
                     </div>
                 </div>
@@ -143,12 +143,12 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                            Tổng số bệnh nhân
+                                            Tổng số đơn thuốc
                                         </div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalElements ?: '0'}">0</div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                                        <i class="fas fa-prescription-bottle-alt fa-2x text-gray-300"></i>
                                     </div>
                                 </div>
                             </div>
@@ -161,30 +161,12 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            Tổng lượt khám
+                                            Tổng chi phí đơn thuốc
                                         </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${activePatients ?: '156'}">156</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalPrice ?: '0'}">0</div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-hospital-user fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-4 col-md-6 mb-4">
-                        <div class="card border-left-warning shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                            Tổng lượt nhập viện
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${emergencyPatients ?: '12'}">12</div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-ambulance fa-2x text-gray-300"></i>
+                                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
                                     </div>
                                 </div>
                             </div>
@@ -200,24 +182,18 @@
                         </h6>
                     </div>
                     <div class="card-body">
-                        <form method="GET" th:action="@{/patients}">
+                        <form method="GET" th:action="@{/prescriptions}">
                             <div class="row g-3 align-items-end">
                                 <div class="col-md-3">
-                                    <label for="searchName" class="form-label">Tên bệnh nhân</label>
-                                    <input type="text" class="form-control" id="searchName" name="name"
-                                           th:value="${param.name}" placeholder="Nhập tên bệnh nhân...">
+                                    <label for="searchMedication" class="form-label">Tên thuốc</label>
+                                    <input type="text" class="form-control" id="searchMedication" name="medication"
+                                           th:value="${param.medication}" placeholder="Nhập tên thuốc...">
                                 </div>
 
                                 <div class="col-md-3">
-                                    <label for="searchPhone" class="form-label">Số điện thoại</label>
-                                    <input type="text" class="form-control" id="searchPhone" name="phone"
-                                           th:value="${param.phone}" placeholder="Nhập số điện thoại...">
-                                </div>
-
-                                <div class="col-md-3">
-                                    <label for="searchCitizenID" class="form-label">Căn cước công dân</label>
-                                    <input type="text" class="form-control" id="searchCitizenID" name="citizenID"
-                                           th:value="${param.citizenID}" placeholder="Nhập căn cước công dân...">
+                                    <label for="searchExaminationId" class="form-label">Mã lượt khám</label>
+                                    <input type="text" class="form-control" id="searchExaminationId" name="examinationId"
+                                           th:value="${param.examinationId}" placeholder="Nhập mã lượt khám...">
                                 </div>
 
                                 <div class="col-md-3 d-grid">
@@ -230,11 +206,11 @@
                     </div>
                 </div>
 
-                <!-- Patients Table -->
+                <!-- Prescriptions Table -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
                         <h6 class="m-0 font-weight-bold text-primary">
-                            <i class="fas fa-list me-2"></i>Danh sách Bệnh nhân
+                            <i class="fas fa-list me-2"></i>Danh sách Đơn thuốc
                         </h6>
                         <div class="d-flex align-items-center">
                             <label for="pageSize" class="form-label me-2 mb-0">Hiển thị:</label>
@@ -255,28 +231,28 @@
                         <div id="alertContainer" class="px-3"></div>
 
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0" id="patientsTable">
+                            <table class="table table-hover mb-0" id="prescriptionsTable">
                                 <thead class="table-light">
                                 <tr>
                                     <th scope="col" class="text-center" style="width: 5%;">
                                         <input type="checkbox" id="selectAll" class="form-check-input">
                                     </th>
                                     <th scope="col" style="width: 8%;">STT</th>
-                                    <th scope="col" style="width: 20%;">Họ và tên</th>
-                                    <th scope="col" style="width: 10%;">Căn cước công dân</th>
-                                    <th scope="col" style="width: 12%;">Số điện thoại</th>
-                                    <th scope="col" style="width: 15%;">Địa chỉ</th>
-                                    <th scope="col" style="width: 10%;">Ngày sinh</th>
-                                    <th scope="col" style="width: 8%;">Tiền sử bệnh</th>
-                                    <th scope="col" style="width: 12%;" class="text-center">Thao tác</th>
+                                    <th scope="col" style="width: 15%;">Mã đơn thuốc</th>
+                                    <th scope="col" style="width: 15%;">Mã lượt khám</th>
+                                    <th scope="col" style="width: 20%;">Tên thuốc</th>
+                                    <th scope="col" style="width: 15%;">Liều lượng</th>
+                                    <th scope="col" style="width: 10%;">Số lượng</th>
+                                    <th scope="col" style="width: 12%;">Giá</th>
+                                    <th scope="col" style="width: 15%;" class="text-center">Thao tác</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <!-- Duyệt qua danh sách bệnh nhân -->
-                                <tr th:each="patient, iterStat : ${patients}" th:id="'patientRow-' + ${patient.patientId}">
+                                <!-- Duyệt qua danh sách đơn thuốc -->
+                                <tr th:each="prescription, iterStat : ${prescriptions}" th:id="'prescriptionRow-' + ${prescription.prescriptionId}">
                                     <td class="text-center">
-                                        <input type="checkbox" class="form-check-input patient-checkbox"
-                                               th:value="${patient.patientId}">
+                                        <input type="checkbox" class="form-check-input prescription-checkbox"
+                                               th:value="${prescription.prescriptionId}">
                                     </td>
 
                                     <!-- STT -->
@@ -284,41 +260,40 @@
 
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="patient-avatar me-2">
-                                                <i class="fas fa-user-circle fa-2x text-muted"></i>
+                                            <div class="prescription-icon me-2">
+                                                <i class="fas fa-capsules fa-lg text-primary"></i>
                                             </div>
                                             <div>
-                                                <div class="fw-medium" th:text="${patient.name}" th:data-name="${patient.name}">Nguyễn Văn A</div>
-                                                <small class="text-muted" th:text="'BN' + ${patient.patientId}">BN001</small>
+                                                <div class="fw-medium" th:text="'DT' + ${prescription.prescriptionId}" th:data-id="${prescription.prescriptionId}">DT001</div>
                                             </div>
                                         </div>
                                     </td>
 
-                                    <td th:text="${patient.citizenId}">012345678901</td>
-                                    <td th:text="${patient.phoneNumber}">0123456789</td>
-                                    <td class="text-truncate" style="max-width: 150px;" th:text="${patient.address}">123 Đường ABC</td>
-                                    <td th:text="${#temporals.format(patient.birthDate, 'dd/MM/yyyy')}">01/01/1990</td>
-                                    <td th:text="${patient.medicalHistory}">Không</td>
+                                    <td th:text="${prescription.examination.examinationId}">EX001</td>
+                                    <td th:text="${prescription.medication}">Paracetamol</td>
+                                    <td th:text="${prescription.dosage}">500mg</td>
+                                    <td th:text="${prescription.amount}">10</td>
+                                    <td th:text="${#numbers.formatDecimal(prescription.price, 0, 'COMMA', 2, 'POINT')}">100,000.00</td>
 
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
-                                            <a th:href="@{'/patients/edit/' + ${patient.patientId}}"
+                                            <a th:href="@{'/prescriptions/edit/' + ${prescription.prescriptionId}}"
                                                class="btn btn-sm btn-outline-warning" title="Chỉnh sửa">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <a th:href="@{'/patients/delete/' + ${patient.patientId} + (page=${currentPage}, size=${pageSize}, name=${param.name}, phone=${param.phone}, citizenID=${param.citizenID})}"
-                                               class="btn btn-sm btn-outline-danger delete-patient-btn"
-                                               th:data-id="${patient.patientId}" title="Xóa">
+                                            <a th:href="@{'/prescriptions/delete/' + ${prescription.prescriptionId} + (page=${currentPage}, size=${pageSize}, medication=${param.medication}, examinationId=${param.examinationId})}"
+                                               class="btn btn-sm btn-outline-danger delete-prescription-btn"
+                                               th:data-id="${prescription.prescriptionId}" title="Xóa">
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                         </div>
                                     </td>
                                 </tr>
 
-                                <!-- Nếu không có bệnh nhân -->
-                                <tr th:if="${#lists.isEmpty(patients)}">
+                                <!-- Nếu không có đơn thuốc -->
+                                <tr th:if="${#lists.isEmpty(prescriptions)}">
                                     <td colspan="9" class="text-center text-muted py-3">
-                                        <i class="fas fa-info-circle me-1"></i>Không có dữ liệu bệnh nhân nào.
+                                        <i class="fas fa-info-circle me-1"></i>Không có dữ liệu đơn thuốc nào.
                                     </td>
                                 </tr>
                                 </tbody>
@@ -331,7 +306,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="text-muted">
                         Hiển thị <span th:text="${(currentPage * pageSize) + 1}" id="startRecord">1</span> đến
-                        <span th:text="${(currentPage * pageSize) + patients?.size() ?: 3}" id="endRecord">3</span>
+                        <span th:text="${(currentPage * pageSize) + prescriptions?.size() ?: 3}" id="endRecord">3</span>
                         trong tổng số <span th:text="${totalElements ?: 1234}" id="totalRecords">1,234</span> bản ghi
                     </div>
 
@@ -339,7 +314,7 @@
                     <nav aria-label="Pagination Navigation">
                         <ul class="pagination mb-0">
                             <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/patients(page=${currentPage - 1}, size=${pageSize}, name=${param.name}, phone=${param.phone}, citizenID=${param.citizenID})}"
+                                <a class="page-link" th:href="@{/prescriptions(page=${currentPage - 1}, size=${pageSize}, medication=${param.medication}, examinationId=${param.examinationId})}"
                                    aria-label="Trang trước">
                                     <i class="fas fa-chevron-left"></i>
                                 </a>
@@ -348,12 +323,12 @@
                             <li class="page-item" th:each="page : ${#numbers.sequence(0, totalPages - 1)}"
                                 th:if="${page >= currentPage - 2 and page <= currentPage + 2}"
                                 th:classappend="${page == currentPage ? 'active' : ''}">
-                                <a class="page-link" th:href="@{/patients(page=${page}, size=${pageSize}, name=${param.name}, phone=${param.phone}, citizenID=${param.citizenID})}"
+                                <a class="page-link" th:href="@{/prescriptions(page=${page}, size=${pageSize}, medication=${param.medication}, examinationId=${param.examinationId})}"
                                    th:text="${page + 1}">1</a>
                             </li>
 
                             <li class="page-item" th:classappend="${currentPage >= totalPages - 1 ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/patients(page=${currentPage + 1}, size=${pageSize}, name=${param.name}, phone=${param.phone}, citizenID=${param.citizenID})}"
+                                <a class="page-link" th:href="@{/prescriptions(page=${currentPage + 1}, size=${pageSize}, medication=${param.medication}, examinationId=${param.examinationId})}"
                                    aria-label="Trang sau">
                                     <i class="fas fa-chevron-right"></i>
                                 </a>
@@ -380,7 +355,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Bạn có chắc chắn muốn xóa bệnh nhân <strong id="patientNameToDelete"></strong>?</p>
+                <p>Bạn có chắc chắn muốn xóa đơn thuốc <strong id="prescriptionIdToDelete"></strong>?</p>
                 <p class="text-warning">
                     <i class="fas fa-exclamation-triangle me-1"></i>
                     Hành động này không thể hoàn tác!
@@ -390,81 +365,6 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
                     <i class="fas fa-trash me-1"></i>Xóa
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Import Modal -->
-<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="importModalLabel">
-                    <i class="fas fa-file-import me-2"></i>Nhập dữ liệu từ Excel
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="excelFile" class="form-label">Chọn file Excel</label>
-                        <input type="file" class="form-control" id="excelFile" accept=".xlsx,.xls">
-                        <div class="form-text">Hỗ trợ file .xlsx và .xls</div>
-                    </div>
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        <a href="/templates/patient-import-template.xlsx" class="alert-link">Tải file mẫu</a>
-                        để xem định dạng dữ liệu cần thiết.
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary">
-                    <i class="fas fa-upload me-1"></i>Nhập dữ liệu
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Export Modal -->
-<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exportModalLabel">
-                    <i class="fas fa-file-export me-2"></i>Xuất dữ liệu ra Excel
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Từ ngày</label>
-                        <input type="date" class="form-control" id="exportFromDate">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Đến ngày</label>
-                        <input type="date" class="form-control" id="exportToDate">
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Trạng thái</label>
-                    <select class="form-select" id="exportStatus">
-                        <option value="">Tất cả</option>
-                        <option value="ACTIVE">Đang điều trị</option>
-                        <option value="DISCHARGED">Đã xuất viện</option>
-                        <option value="EMERGENCY">Cấp cứu</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-success">
-                    <i class="fas fa-download me-1"></i>Xuất Excel
                 </button>
             </div>
         </div>
@@ -483,56 +383,46 @@
         const currentPage = parseInt('[[${currentPage}]]') || 0;
         const pageSize = parseInt('[[${pageSize}]]') || 10;
 
-        // Xử lý xóa bệnh nhân bằng AJAX
-        document.querySelectorAll('.delete-patient-btn').forEach(button => {
+        // Xử lý xóa đơn thuốc bằng AJAX
+        document.querySelectorAll('.delete-prescription-btn').forEach(button => {
             button.addEventListener('click', function (event) {
                 event.preventDefault(); // Ngăn redirect mặc định
-                const patientId = this.getAttribute('data-id');
-                const row = document.getElementById('patientRow-' + patientId);
+                const prescriptionId = this.getAttribute('data-id');
+                const row = document.getElementById('prescriptionRow-' + prescriptionId);
                 const alertContainer = document.getElementById('alertContainer');
-                const patientName = row.querySelector('[data-name]').getAttribute('data-name');
                 const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
                 const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
 
-                // Debug: Log để kiểm tra
-                console.log('Attempting to delete patient ID:', patientId, 'Name:', patientName);
-
                 // Hiển thị modal xác nhận
-                document.getElementById('patientNameToDelete').textContent = patientName;
+                document.getElementById('prescriptionIdToDelete').textContent = 'DT' + prescriptionId;
                 modal.show();
 
                 // Xử lý khi nhấn nút "Xóa" trong modal
                 confirmDeleteBtn.onclick = function () {
+                    // Lấy CSRF token (nếu dùng Spring Security)
+                    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
                     // Gửi yêu cầu AJAX
-                    fetch('/patients/delete/' + patientId, {
-                        method: 'POST',
+                    fetch('/prescriptions/delete/' + prescriptionId, {
+                        method: 'GET',
                         headers: {
-                            'Content-Type': 'application/json',
-                            // Nếu dùng Spring Security, thêm CSRF token
-                            // 'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            [csrfHeader]: csrfToken // Thêm CSRF token nếu có
                         }
                     })
                         .then(response => {
-                            console.log('Response status:', response.status); // Debug
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok: ' + response.statusText);
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            console.log('Response data:', data); // Debug
                             modal.hide();
-                            if (data.success) {
+                            if (response.ok) {
                                 // Xóa hàng trên UI với hiệu ứng mờ dần
                                 if (row) {
                                     row.style.transition = 'opacity 0.3s';
                                     row.style.opacity = '0';
                                     setTimeout(() => {
                                         row.remove();
-                                        console.log('Row removed for patient ID:', patientId);
 
                                         // Cập nhật STT
-                                        const rows = document.querySelectorAll('#patientsTable tbody tr');
+                                        const rows = document.querySelectorAll('#prescriptionsTable tbody tr');
                                         rows.forEach((row, index) => {
                                             row.querySelector('.stt').textContent = (currentPage * pageSize) + index + 1;
                                         });
@@ -546,12 +436,11 @@
                                         // Hiển thị alert thành công
                                         alertContainer.innerHTML = `
                                             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                                <i class="fas fa-check-circle me-2"></i>${data.message}
+                                                <i class="fas fa-check-circle me-2"></i>Xóa đơn thuốc thành công!
                                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                             </div>`;
                                     }, 300);
                                 } else {
-                                    console.error('Row not found for patient ID:', patientId);
                                     alertContainer.innerHTML = `
                                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                             <i class="fas fa-exclamation-triangle me-2"></i>Lỗi: Không tìm thấy hàng để xóa.
@@ -560,11 +449,13 @@
                                 }
                             } else {
                                 // Hiển thị alert lỗi
-                                alertContainer.innerHTML = `
-                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                        <i class="fas fa-exclamation-triangle me-2"></i>${data.message}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>`;
+                                return response.text().then(errorMessage => {
+                                    alertContainer.innerHTML = `
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>Lỗi: ${errorMessage || 'Không thể xóa đơn thuốc.'}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>`;
+                                });
                             }
 
                             // Tự động ẩn alert sau 5 giây
@@ -578,11 +469,10 @@
                         })
                         .catch(error => {
                             modal.hide();
-                            console.error('AJAX error:', error); // Debug
-                            // Hiển thị alert lỗi nếu AJAX thất bại
+                            console.error('AJAX error:', error);
                             alertContainer.innerHTML = `
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <i class="fas fa-exclamation-triangle me-2"></i>Lỗi khi xóa bệnh nhân: ${error.message}
+                                    <i class="fas fa-exclamation-triangle me-2"></i>Lỗi khi xóa đơn thuốc: ${error.message}
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>`;
                             setTimeout(() => {

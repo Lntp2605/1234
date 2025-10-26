@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Thêm Bác sĩ - Hệ thống Quản lý Bệnh viện</title>
+
+    <!-- CSS dùng static resource của Spring -->
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/doctors.css}"/>
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+<!-- Header -->
+<header th:replace="~{fragments/header :: siteHeader}" class="sticky-top"></header>
+
+<!-- Breadcrumb Section -->
+<div class="breadcrumb-section bg-light py-2">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">
+                    <a th:href="@{/}" class="text-decoration-none"><i class="fas fa-home me-1"></i>Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a th:href="@{/doctors-mgmt}" class="text-decoration-none"><i class="fas fa-user-md me-1"></i>Quản lý Bác sĩ</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Thêm Bác sĩ</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Sidebar và Content Layout -->
+<div class="container-fluid flex-grow-1">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" id="sidebarMenu">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/patients}">
+                            <i class="fas fa-user-injured me-2"></i>
+                            Quản lý Bệnh nhân
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/doctors-mgmt}">
+                            <i class="fas fa-user-md me-2"></i>
+                            Quản lý Bác sĩ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/departments}">
+                            <i class="fas fa-building me-2"></i>
+                            Quản lý Khoa
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/examinations}">
+                            <i class="fas fa-stethoscope me-2"></i>
+                            Khám bệnh
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/prescriptions}">
+                            <i class="fas fa-prescription-bottle-alt me-2"></i>
+                            Đơn thuốc
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admissions}">
+                            <i class="fas fa-bed me-2"></i>
+                            Nhập viện
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/invoices}">
+                            <i class="fas fa-file-invoice-dollar me-2"></i>
+                            Hóa đơn
+                        </a>
+                    </li>
+                </ul>
+
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>Báo cáo</span>
+                </h6>
+                <ul class="nav flex-column mb-2">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            Thống kê tháng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Báo cáo doanh thu
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Nội dung chính -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="content-wrapper py-4 fade-in">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h3 mb-0 text-gray-800">
+                            <i class="fas fa-user-md text-primary me-2"></i>
+                            Thêm Bác sĩ
+                        </h1>
+                        <p class="text-muted mb-0">Nhập thông tin chi tiết của bác sĩ</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/doctors-mgmt}" class="btn btn-secondary">
+                            <i class="fa-solid fa-rotate-left me-2"></i>Quay lại danh sách
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h6 class="m-0 fw-bold text-primary">
+                            <i class="fa-regular fa-pen-to-square me-2"></i>Thêm Bác sĩ
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <!-- Hiển thị thông báo thành công hoặc lỗi -->
+                        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <span th:text="${successMessage}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <span th:text="${errorMessage}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+
+                        <!-- Form thêm bác sĩ -->
+                        <form th:action="@{/doctors-mgmt/add}" th:object="${doctor}" method="post" class="row g-3 needs-validation" novalidate>
+                            <!-- Tên -->
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Tên bác sĩ <span class="text-danger">*</span></label>
+                                <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Nhập tên bác sĩ" required>
+                                <div class="invalid-feedback" th:errors="*{name}">Tên không được để trống.</div>
+                            </div>
+
+                            <!-- Chuyên khoa -->
+                            <div class="col-md-6">
+                                <label for="specialty" class="form-label">Chuyên khoa <span class="text-danger">*</span></label>
+                                <input type="text" id="specialty" th:field="*{specialty}" class="form-control" placeholder="Nhập chuyên khoa" required>
+                                <div class="invalid-feedback" th:errors="*{specialty}">Chuyên khoa không được để trống.</div>
+                            </div>
+
+                            <!-- Bằng cấp -->
+                            <div class="col-md-6">
+                                <label for="diploma" class="form-label">Bằng cấp <span class="text-danger">*</span></label>
+                                <input type="text" id="diploma" th:field="*{diploma}" class="form-control" placeholder="VD: Thạc sĩ, Tiến sĩ" required>
+                                <div class="invalid-feedback" th:errors="*{diploma}">Bằng cấp không được để trống.</div>
+                            </div>
+
+                            <!-- Số điện thoại -->
+                            <div class="col-md-6">
+                                <label for="phoneNumber" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                                <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control" placeholder="Nhập số điện thoại (10 số, bắt đầu bằng 0 hoặc +84)" pattern="(0|\+84)\d{9}" required>
+                                <div class="invalid-feedback" th:errors="*{phoneNumber}">Số điện thoại phải là 10 số, bắt đầu bằng 0 hoặc +84.</div>
+                                <div class="invalid-feedback" th:if="${errorMessage != null and errorMessage.contains('phone')}">
+                                    <span th:text="${errorMessage}"></span>
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="Nhập địa chỉ email" required>
+                                <div class="invalid-feedback" th:errors="*{email}">Email không hợp lệ hoặc đã tồn tại.</div>
+                                <div class="invalid-feedback" th:if="${errorMessage != null and errorMessage.contains('email')}">
+                                    <span th:text="${errorMessage}"></span>
+                                </div>
+                            </div>
+
+                            <!-- Lịch làm việc -->
+                            <div class="col-md-6">
+                                <label for="workSchedule" class="form-label">Lịch làm việc <span class="text-danger">*</span></label>
+                                <input type="text" id="workSchedule" th:field="*{workSchedule}" class="form-control" placeholder="VD: Thứ 2 - Thứ 6, 8:00 - 16:00" required>
+                                <div class="invalid-feedback" th:errors="*{workSchedule}">Lịch làm việc không được để trống.</div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+                                <a th:href="@{/doctors-mgmt}" class="btn btn-secondary">
+                                    <i class="fas fa-times me-2"></i>Hủy
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Lưu
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: siteFooter}" class="mt-auto"></footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/doctors.js}"></script>
+
+<!-- JavaScript -->
+<script>
+    (function () {
+        'use strict';
+        var forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            if (alert.classList.contains('alert-dismissible')) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }
+        });
+    }, 5000);
+</script>
+</body>
+</html>

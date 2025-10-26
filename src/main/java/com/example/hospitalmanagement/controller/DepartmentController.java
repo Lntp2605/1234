@@ -2,71 +2,135 @@ package com.example.hospitalmanagement.controller;
 
 import com.example.hospitalmanagement.model.Department;
 import com.example.hospitalmanagement.service.DepartmentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Collections;
+import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/departments")
 public class DepartmentController {
 
-    @Autowired
-    private DepartmentService departmentService;
+    private final DepartmentService departmentService;
+
+    /* =========================
+       LIST – hỗ trợ ?action=add|edit để tương thích link cũ
+       ========================= */
+    @GetMapping
+    public String list(@RequestParam(required = false) String action,
+                       @RequestParam(required = false) Long id,
+                       @RequestParam(required = false) String keyword,
+                       @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "10") int size,
+                       @RequestParam(defaultValue = "asc") String sort,
+                       Model model) {
+
+        if ("add".equalsIgnoreCase(action)) return "redirect:/departments/add";
+        if ("edit".equalsIgnoreCase(action) && id != null) return "redirect:/departments/edit/" + id;
+
+        Page<Department> pageData = departmentService.searchDepartments(keyword, page, size, sort);
+        List<Department> items = pageData.getContent();
+        if (items == null) items = Collections.emptyList();
+
+        model.addAttribute("departments", items);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", size);
+        model.addAttribute("totalPages", pageData.getTotalPages());
+        model.addAttribute("totalElements", pageData.getTotalElements());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
+
+        // KPI
+        model.addAttribute("totalBeds", departmentService.sumAllBeds());
+        model.addAttribute("activeBedDepartments", departmentService.countActiveBedDepartments());
+
+        // UI flags
+        model.addAttribute("showBreadcrumb", true);
+        model.addAttribute("activePage", "departments");
+
+        // JSON nhúng nếu JS cần
+        model.addAttribute("allDepartmentsJson", "[]");
+
+        return "layout/departments/list";
+    }
+
+    /* =========================
+       ADD (GET form + POST submit)
+       ========================= */
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("department", new Department());
+        model.addAttribute("showBreadcrumb", true);
+        model.addAttribute("activePage", "departments");
+        return "layout/departments/add";
+    }
 
     @PostMapping("/add")
-    public String addDepartment(@ModelAttribute("department") Department department, Model model) {
+    public String add(@ModelAttribute Department department, RedirectAttributes ra) {
         try {
             departmentService.addDepartment(department);
-            model.addAttribute("message", "Department added successfully");
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("message", e.getMessage());
-        }
-        return "departments/add-department";
-    }
-
-    public DepartmentController(DepartmentService departmentService) {
-        this.departmentService = departmentService;
-    }
-
-    // Lấy danh sách khoa
-    @GetMapping("/list")
-    public String listDepartments(Model model) {
-        List<Department> departments = departmentService.getAllDepartments();
-        model.addAttribute("departments", departments);
-        return "departments/list";
-    }
-
-    @GetMapping("/delete/{id}")
-    public String deleteDepartment(@PathVariable("id") Long id) {
-        boolean isDeleted = departmentService.deleteDepartmentById(id);
-        if (isDeleted) {
-            return "redirect:/departments/list"; // Sau khi xoá, quay lại danh sách
-        } else {
-            return "redirect:/departments/error"; // Nếu không tìm thấy
+            ra.addFlashAttribute("successMessage", "Thêm khoa thành công");
+            return "redirect:/departments";
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/departments/add";
         }
     }
-    @GetMapping("/search")
-    public String searchDepartments(@RequestParam("keyword") String keyword, Model model) {
-        List<Department> results = departmentService.searchDepartments(keyword);
-        model.addAttribute("departments", results);
-        model.addAttribute("keyword", keyword);
-        return "departments/list"; // Trang hiển thị danh sách kết quả
-    }
 
-
-    @PostMapping("/update/{id}")
-    public String updateDepartment(@PathVariable("id") Long id,
-                                   @ModelAttribute("department") Department department,
-                                   Model model) {
+    /* =========================
+       EDIT (GET form + POST submit)
+       ========================= */
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes ra) {
         try {
-            departmentService.updateDepartment(id, department);
-            model.addAttribute("message", "Cập nhật khoa thành công!");
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("message", e.getMessage());
+            Department d = departmentService.getDepartmentById(id);
+            model.addAttribute("department", d);
+            model.addAttribute("showBreadcrumb", true);
+            model.addAttribute("activePage", "departments");
+            return "layout/departments/edit";
+        } catch (Exception ex) {
+            ra.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/departments";
         }
-        return "departments/edit-department";
     }
 
+    @PostMapping("/update")
+    public String update(@ModelAttribute Department department, RedirectAttributes ra) {
+        try {
+            departmentService.updateDepartment(department.getDepartmentId(), department);
+            ra.addFlashAttribute("successMessage", "Cập nhật khoa thành công");
+            return "redirect:/departments";
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/departments/edit/" + department.getDepartmentId();
+        }
+    }
+
+    /* =========================
+       DELETE – hỗ trợ cả POST /delete và POST /delete/{id}
+       ========================= */
+    @PostMapping("/delete")
+    public String deleteByForm(@RequestParam Long id, RedirectAttributes ra) {
+        return doDelete(id, ra);
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteByPath(@PathVariable Long id, RedirectAttributes ra) {
+        return doDelete(id, ra);
+    }
+
+    private String doDelete(Long id, RedirectAttributes ra) {
+        if (departmentService.deleteDepartmentById(id)) {
+            ra.addFlashAttribute("successMessage", "Đã xóa khoa");
+        } else {
+            ra.addFlashAttribute("errorMessage", "Không tìm thấy khoa để xóa");
+        }
+        return "redirect:/departments";
+    }
 }

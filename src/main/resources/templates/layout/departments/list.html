@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Quản lý Khoa - Hệ thống Quản lý Bệnh viện</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/department.css}"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<header th:replace="fragments/header :: siteHeader" class="sticky-top"></header>
+
+<div class="breadcrumb-section bg-light py-2" th:if="${showBreadcrumb}">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">
+                    <a th:href="@{/}" class="text-decoration-none"><i class="fas fa-home me-1"></i>Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a th:href="@{/departments}" class="text-decoration-none"><i class="fas fa-building me-1"></i>Quản lý Khoa</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Danh sách Khoa</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container-fluid flex-grow-1">
+    <div class="row">
+        <!-- SỬA: gọi đúng fragment mới -->
+        <th:block th:replace="fragments/sidebar :: siteSidebar"></th:block>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="content-wrapper py-4"><!-- bỏ fade-in -->
+
+                <!-- Alerts -->
+                <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa-regular fa-circle-check me-2"></i><span th:text="${successMessage}">Thành công</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+                </div>
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa-regular fa-circle-xmark me-2"></i><span th:text="${errorMessage}">Có lỗi</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+                </div>
+
+                <!-- LIST -->
+                <div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h1 class="h3 mb-0 text-gray-800">
+                                <i class="fas fa-building text-primary me-2"></i>Quản lý Khoa
+                            </h1>
+                            <p class="text-muted mb-0">Quản lý thông tin khoa trong hệ thống</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a th:href="@{/departments(action='add')}" class="btn btn-primary btn-icon">
+                                <i class="fas fa-plus me-2"></i><span>Thêm Khoa</span>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- KPI-->
+                    <div class="row mb-4">
+                        <!-- LƯỢT KHOA HIỆN CÓ -->
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Tổng số khoa
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalElements ?: '0'}">0</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa-solid fa-hospital fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TỔNG SỐ GIƯỜNG -->
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Tổng số giường
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalBeds ?: '0'}">0</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa-solid fa-bed fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <!-- Search -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 fw-bold text-primary"><i class="fas fa-search me-2"></i>Tìm kiếm và Lọc</h6>
+                        </div>
+                        <div class="card-body">
+                            <form method="GET" th:action="@{/departments}">
+                                <input type="hidden" name="action" value="list"/>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="kw" class="form-label">Từ khóa</label>
+                                        <input type="text" class="form-control" id="kw" name="keyword"
+                                               th:value="${keyword}" placeholder="Tên khoa / Trưởng khoa / Địa điểm...">
+                                    </div>
+                                    <div class="col-md-2 mb-3 d-flex align-items-end">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-search me-2"></i>Tìm kiếm
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 fw-bold text-primary"><i class="fas fa-list me-2"></i>Danh sách Khoa</h6>
+                            <div class="d-flex align-items-center">
+                                <label for="pageSize" class="form-label me-2 mb-0">Hiển thị:</label>
+                                <select class="form-select form-select-sm" id="pageSize" style="width:auto;"
+                                        onchange="location.href='?action=list&size='+this.value+'&page=0&keyword='+encodeURIComponent(document.getElementById('kw').value||'')">
+                                    <option th:value="5"  th:selected="${pageSize == 5}">5</option>
+                                    <option th:value="10"  th:selected="${pageSize == 10}">10</option>
+                                    <option th:value="25"  th:selected="${pageSize == 25}">25</option>
+                                    <option th:value="50"  th:selected="${pageSize == 50}">50</option>
+                                    <option th:value="100" th:selected="${pageSize == 100}">100</option>
+                                </select>
+                                <span class="ms-2 text-muted">bản ghi</span>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="deptTable">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th style="width:8%;">STT</th>
+                                        <th style="width:22%;">Tên khoa
+
+                                        </th>
+                                        <th style="width:24%;">Mô tả</th>
+                                        <th style="width:16%;">Trưởng khoa</th>
+                                        <th style="width:10%;">Số giường</th>
+                                        <th style="width:12%;">Địa điểm</th>
+                                        <th style="width:8%;" class="text-center">Thao tác</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody id="deptTbody"
+                                           th:attr="data-offset=${currentPage * pageSize},
+                                  data-page=${currentPage},
+                                  data-size=${pageSize}">
+                                    <!-- Server render -->
+                                    <tr th:each="dept, iStat : ${departments}" th:object="${dept}">
+                                        <td class="fw-medium stt-cell" th:text="${(currentPage * pageSize) + iStat.index + 1}">1</td>
+                                        <td class="fw-medium dept-name" th:text="*{departmentName}">Khoa Tim mạch</td>
+                                        <td class="text-truncate desc-col" th:text="*{description}">Chuyên điều trị tim mạch...</td>
+                                        <td th:text="*{headOfDepartment}">BS. Nguyễn Văn A</td>
+                                        <td th:text="*{bedCount}">45</td>
+                                        <td th:text="*{location}">Tầng 3 - Khu A</td>
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <a th:href="@{/departments(action='edit', id=${dept.departmentId})}"
+                                                   class="btn btn-sm btn-outline-warning" title="Chỉnh sửa">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form th:action="@{/departments/delete}" method="post" class="d-inline">
+                                                    <input type="hidden" name="id" th:value="*{departmentId}">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa"
+                                                            onclick="return confirm('Xóa khoa: ' + this.closest('tr').querySelector('.dept-name').textContent.trim() + ' ?');">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Empty state -->
+                                    <tr th:if="${departments == null or #lists.isEmpty(departments)}">
+                                        <td colspan="7" class="text-center text-muted py-4">
+                                            <i class="fa-regular fa-folder-open me-1"></i>Chưa có khoa nào.
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="text-muted">
+                                Hiển thị
+                                <span th:text="${(currentPage * pageSize) + ((departments != null and departments.size() > 0) ? 1 : 0)}">1</span>
+                                đến
+                                <span th:text="${(currentPage * pageSize) + (departments != null ? departments.size() : 0)}">0</span>
+                                trong tổng số <span th:text="${totalElements ?: 0}">0</span> bản ghi
+                            </div>
+                            <nav aria-label="Pagination Navigation" id="pagerServer">
+                                <ul class="pagination mb-0">
+                                    <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                                        <a class="page-link"
+                                           th:href="@{/departments(action='list', page=${currentPage - 1}, size=${pageSize}, keyword=${keyword})}"
+                                           aria-label="Trang trước">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item"
+                                        th:each="p : ${#numbers.sequence(0, totalPages - 1)}"
+                                        th:if="${p >= currentPage - 2 and p <= currentPage + 2}"
+                                        th:classappend="${p == currentPage ? 'active' : ''}">
+                                        <a class="page-link"
+                                           th:text="${p + 1}"
+                                           th:href="@{/departments(action='list', page=${p}, size=${pageSize}, keyword=${keyword})}">1</a>
+                                    </li>
+                                    <li class="page-item" th:classappend="${currentPage >= totalPages - 1 ? 'disabled' : ''}">
+                                        <a class="page-link"
+                                           th:href="@{/departments(action='list', page=${currentPage + 1}, size=${pageSize}, keyword=${keyword})}"
+                                           aria-label="Trang sau">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+
+                            <nav aria-label="Pagination Navigation" id="pagerClient" style="display:none;"></nav>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>>
+     </main>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: siteFooter" class="mt-auto"></footer>
+
+<script type="application/json" id="allDepartments" th:utext="${allDepartmentsJson}">[]</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:replace="fragments/header :: headerScripts"></script>
+<script th:src="@{/js/department.js}"></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Chỉnh sửa Khám bệnh</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/department.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<header th:replace="fragments/header :: siteHeader" class="sticky-top"></header>
+
+<div class="breadcrumb-section bg-light py-2" th:if="${showBreadcrumb}">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/examinations}">Khám bệnh</a></li>
+                <li class="breadcrumb-item active">Chỉnh sửa</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container-fluid flex-grow-1">
+    <div class="row">
+        <th:block th:replace="fragments/sidebar :: siteSidebar"></th:block>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="content-wrapper py-4">
+
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa-regular fa-circle-xmark me-2"></i><span th:text="${errorMessage}">Có lỗi</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 mb-0"><i class="fas fa-stethoscope me-2 text-primary"></i>Chỉnh sửa Khám bệnh</h1>
+                    <a th:href="@{/examinations}" class="btn btn-secondary"><i class="fa-solid fa-rotate-left me-2"></i>Quay lại</a>
+                </div>
+
+                <div class="card shadow">
+                    <div class="card-body">
+                        <form th:action="@{/examinations/update}" th:object="${examination}" method="post" class="row g-3 needs-validation" novalidate>
+                            <input type="hidden" th:field="*{examinationId}"/>
+
+                            <!-- ĐỔI input -> select: Mã BN -->
+                            <div class="col-md-4">
+                                <label class="form-label">Mã BN <span class="text-danger">*</span></label>
+                                <select name="patientId" class="form-select" required>
+                                    <option value="">-- Chọn bệnh nhân --</option>
+                                    <option th:each="p : ${patients}"
+                                            th:value="${p.patientId}"
+                                            th:selected="${examination.patient != null && p.patientId == examination.patient.patientId}"
+                                            th:text="${p.patientId + ' - ' + p.name}">
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn Bệnh nhân.</div>
+                            </div>
+
+                            <!-- ĐỔI input -> select: Mã BS -->
+                            <div class="col-md-4">
+                                <label class="form-label">Mã BS <span class="text-danger">*</span></label>
+                                <select name="doctorId" class="form-select" required>
+                                    <option value="">-- Chọn bác sĩ --</option>
+                                    <option th:each="d : ${doctors}"
+                                            th:value="${d.doctorId}"
+                                            th:selected="${examination.doctor != null && d.doctorId == examination.doctor.doctorId}"
+                                            th:text="${d.doctorId + ' - ' + d.name}">
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn Bác sĩ.</div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Ngày khám <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" name="date"
+                                       th:value="${#dates.format(examination.date,'yyyy-MM-dd')}" required>
+                                <div class="invalid-feedback">Vui lòng chọn ngày.</div>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label">Chẩn đoán</label>
+                                <input type="text" class="form-control" name="diagnosis" th:value="*{diagnosis}">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Chi phí</label>
+                                <input type="number" step="0.01" class="form-control" name="cost" th:value="*{cost}">
+                            </div>
+
+                            <div class="col-12 d-flex justify-content-end gap-2">
+                                <a th:href="@{/examinations}" class="btn btn-secondary">Hủy</a>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Lưu</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: siteFooter" class="mt-auto"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:replace="fragments/header :: headerScripts"></script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+/* =========================
+   DOCTOR MANAGEMENT SPECIFIC STYLES
+   ========================= */
+
+/* Override Bootstrap and Custom Variables */
+:root {
+    --doctor-primary: #0d6efd;
+    --doctor-success: #198754;
+    --doctor-warning: #ffc107;
+    --doctor-danger: #dc3545;
+    --doctor-info: #0dcaf0;
+    --doctor-light: #f8f9fa;
+    --doctor-dark: #343a40;
+}
+
+/* Doctor Avatar */
+.doctor-avatar {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Doctor Status Badges */
+.badge.bg-success {
+    background-color: var(--doctor-success) !important;
+    color: white !important;
+}
+
+.badge.bg-warning {
+    background-color: var(--doctor-warning) !important;
+    color: #000 !important;
+}
+
+.badge.bg-danger {
+    background-color: var(--doctor-danger) !important;
+    color: white !important;
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d !important;
+    color: white !important;
+}
+
+.badge.bg-info {
+    background-color: var(--doctor-info) !important;
+    color: white !important;
+}
+
+/* Table Enhancements */
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.05) !important;
+}
+
+.table th {
+    background-color: var(--doctor-light) !important;
+    border-top: none !important;
+    font-weight: 600 !important;
+    color: var(--doctor-dark) !important;
+    white-space: nowrap;
+    font-size: 0.875rem;
+}
+
+.table td {
+    vertical-align: middle;
+    font-size: 0.875rem;
+}
+
+/* Border Left Cards for Stats */
+.border-left-primary {
+    border-left: 4px solid var(--doctor-primary) !important;
+}
+
+.border-left-success {
+    border-left: 4px solid var(--doctor-success) !important;
+}
+
+.border-left-warning {
+    border-left: 4px solid var(--doctor-warning) !important;
+}
+
+.border-left-danger {
+    border-left: 4px solid var(--doctor-danger) !important;
+}
+
+/* Text utilities */
+.text-xs {
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.text-gray-800 {
+    color: var(--doctor-dark) !important;
+}
+
+.text-gray-300 {
+    color: #d1d3e2 !important;
+}
+
+/* Buttons */
+.btn-group .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    margin: 0 1px;
+}
+
+.btn-outline-info:hover {
+    background-color: var(--doctor-info);
+    border-color: var(--doctor-info);
+    color: white;
+}
+
+.btn-outline-warning:hover {
+    background-color: var(--doctor-warning);
+    border-color: var(--doctor-warning);
+    color: #000;
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--doctor-danger);
+    border-color: var(--doctor-danger);
+    color: white;
+}
+
+/* Search Form Enhancements */
+.form-label {
+    font-weight: 600 !important;
+    color: var(--doctor-dark) !important;
+    margin-bottom: 0.5rem !important;
+    font-size: 0.875rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--doctor-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25) !important;
+}
+
+/* Modal Enhancements */
+.modal-header {
+    background-color: var(--doctor-primary) !important;
+    color: white !important;
+    border-bottom: none !important;
+}
+
+.modal-header .btn-close {
+    filter: invert(1) !important;
+}
+
+/* Card Styling */
+.card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    background-color: var(--doctor-light);
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Stats Cards */
+.stats-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Pagination Styling */
+.pagination .page-link {
+    color: var(--doctor-primary);
+    border-color: #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--doctor-primary);
+    border-color: var(--doctor-primary);
+}
+
+.pagination .page-link:hover {
+    color: var(--doctor-primary);
+    background-color: #e9ecef;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-group .btn {
+        margin: 0.125rem 0;
+        border-radius: 0.25rem !important;
+        width: 100%;
+    }
+
+    .table-responsive {
+        font-size: 0.8rem;
+    }
+
+    .doctor-avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    /* Hide some columns on mobile */
+    .table th:nth-child(6),
+    .table td:nth-child(6) {
+        display: none; /* Hide email column */
+    }
+}
+
+@media (max-width: 576px) {
+    .card-header .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    .card-header .d-flex > div:last-child {
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+
+    .form-select[style*="width"] {
+        width: 100% !important;
+    }
+
+    .stats-card-number {
+        font-size: 1.5rem !important;
+    }
+
+    /* Stack search form vertically */
+    .row .col-md-3,
+    .row .col-md-2 {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Loading States */
+.table tbody tr.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.btn.loading {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.btn.loading::after {
+    content: "";
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    margin-left: 0.5rem;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: button-loading-spinner 1s ease infinite;
+}
+
+@keyframes button-loading-spinner {
+    from {
+        transform: rotate(0turn);
+    }
+    to {
+        transform: rotate(1turn);
+    }
+}
+
+/* Print Styles for Doctor List */
+@media print {
+    .btn,
+    .form-control,
+    .form-select,
+    .modal,
+    .dropdown,
+    .sidebar {
+        display: none !important;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid #000;
+        break-inside: avoid;
+    }
+
+    .table {
+        font-size: 0.7rem;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.25rem;
+    }
+
+    .badge {
+        border: 1px solid #000;
+        color: #000 !important;
+        background-color: transparent !important;
+    }
+
+    .content-wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    /* ----- Sidebar Active Link ----- */
+    .sidebar .nav-link {
+        color: #333;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.2s ease-in-out;
+        padding: 10px 15px;
+    }
+
+    .sidebar .nav-link:hover {
+        background-color: #e9f2ff; /* xanh nhạt khi hover */
+        color: #0d6efd; /* màu xanh Bootstrap */
+    }
+
+    .sidebar .nav-link.active {
+        background-color: #0d6efd; /* xanh đậm khi active */
+        color: #fff; /* chữ trắng */
+        font-weight: 600;
+        box-shadow: 0 2px 5px rgba(13, 110, 253, 0.3);
+    }
+
+    /* Icon trong nav-link */
+    .sidebar .nav-link i {
+        width: 20px;
+        text-align: center;
+    }
+
+    /* Khi hover hoặc active, icon cũng đổi màu */
+    .sidebar .nav-link:hover i,
+    .sidebar .nav-link.active i {
+        color: #fff;
+    }
+
+}

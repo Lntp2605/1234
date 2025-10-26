@@ -4,7 +4,9 @@ import com.example.hospitalmanagement.model.Invoice;
 import com.example.hospitalmanagement.service.InvoiceService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -23,23 +25,26 @@ public class InvoiceController {
     public String listInvoices(Model model) {
         List<Invoice> invoices = invoiceService.getAllInvoices();
         model.addAttribute("invoices", invoices);
-        return "invoices/list";
+        return "layout/invoices/list";
     }
 
     // Hiển thị form thêm hóa đơn
     @GetMapping("/add")
     public String showAddForm(Model model) {
         model.addAttribute("invoice", new Invoice());
-        return "invoices/add";
+        return "layout/invoices/add";
     }
 
     // Xử lý thêm hóa đơn
     @PostMapping("/add")
-    public String addInvoice(@ModelAttribute("invoice") Invoice invoice, Model model) {
+    public String addInvoice(@Valid @ModelAttribute("invoice") Invoice invoice, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "layout/invoices/add";
+        }
         boolean isAdded = invoiceService.addInvoice(invoice);
         if (!isAdded) {
-            model.addAttribute("error", "Invalid data. Please check fields again.");
-            return "invoices/add";
+            model.addAttribute("error", "Không thể thêm hóa đơn. Vui lòng kiểm tra mã bệnh nhân, số tiền hoặc ngày lập hóa đơn.");
+            return "layout/invoices/add";
         }
         return "redirect:/invoices/list";
     }
@@ -47,21 +52,38 @@ public class InvoiceController {
     // Hiển thị form chỉnh sửa hóa đơn
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
-        invoiceService.getInvoiceById(id).ifPresent(invoice -> model.addAttribute("invoice", invoice));
-        return "invoices/edit";
+        return invoiceService.getInvoiceById(id)
+                .map(invoice -> {
+                    model.addAttribute("invoice", invoice);
+                    return "layout/invoices/edit";
+                })
+                .orElseGet(() -> {
+                    model.addAttribute("error", "Hóa đơn không tồn tại.");
+                    return "redirect:/invoices/list";
+                });
     }
 
     // Xử lý chỉnh sửa hóa đơn
     @PostMapping("/update")
-    public String updateInvoice(@ModelAttribute("invoice") Invoice invoice) {
-        invoiceService.updateInvoice(invoice);
+    public String updateInvoice(@Valid @ModelAttribute("invoice") Invoice invoice, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "layout/invoices/edit";
+        }
+        boolean isUpdated = invoiceService.updateInvoice(invoice);
+        if (!isUpdated) {
+            model.addAttribute("error", "Không thể cập nhật hóa đơn. Vui lòng kiểm tra lại.");
+            return "layout/invoices/edit";
+        }
         return "redirect:/invoices/list";
     }
 
     // Xóa hóa đơn
     @GetMapping("/delete/{id}")
-    public String deleteInvoice(@PathVariable("id") Long id) {
-        invoiceService.deleteInvoice(id);
+    public String deleteInvoice(@PathVariable("id") Long id, Model model) {
+        boolean isDeleted = invoiceService.deleteInvoice(id);
+        if (!isDeleted) {
+            model.addAttribute("error", "Không thể xóa hóa đơn. Hóa đơn không tồn tại.");
+        }
         return "redirect:/invoices/list";
     }
 
@@ -71,6 +93,6 @@ public class InvoiceController {
         List<Invoice> results = invoiceService.searchInvoices(keyword);
         model.addAttribute("invoices", results);
         model.addAttribute("keyword", keyword);
-        return "invoices/list";
+        return "layout/invoices/list";
     }
 }

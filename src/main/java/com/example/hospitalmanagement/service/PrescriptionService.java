@@ -4,8 +4,12 @@ import com.example.hospitalmanagement.model.Prescription;
 import com.example.hospitalmanagement.model.Examination;
 import com.example.hospitalmanagement.repository.PrescriptionRepository;
 import com.example.hospitalmanagement.repository.ExaminationRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -20,7 +24,21 @@ public class PrescriptionService {
         this.examinationRepository = examinationRepository;
     }
 
-    // Lấy toàn bộ danh sách
+    // Lấy danh sách đơn thuốc với phân trang và tìm kiếm
+    public Page<Prescription> getAllPrescriptions(int page, int size, String medication, Long examinationId) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (medication != null && !medication.trim().isEmpty() && examinationId != null) {
+            return prescriptionRepository.findByMedicationContainingIgnoreCaseAndExamination_ExaminationId(medication, examinationId, pageable);
+        } else if (medication != null && !medication.trim().isEmpty()) {
+            return prescriptionRepository.findByMedicationContainingIgnoreCase(medication, pageable);
+        } else if (examinationId != null) {
+            return prescriptionRepository.findByExamination_ExaminationId(examinationId, pageable);
+        } else {
+            return prescriptionRepository.findAll(pageable);
+        }
+    }
+
+    // Lấy toàn bộ danh sách (không dùng phân trang, giữ lại nếu cần)
     public List<Prescription> getAllPrescriptions() {
         return prescriptionRepository.findAll();
     }
@@ -64,7 +82,6 @@ public class PrescriptionService {
     public void updatePrescription(Long prescriptionId, Long examinationId,
                                    String medication, String dosage,
                                    int amount, double price) {
-
         Prescription prescription = getPrescriptionById(prescriptionId);
 
         if (medication == null || medication.trim().isEmpty()) {
@@ -99,7 +116,8 @@ public class PrescriptionService {
             prescriptionRepository.deleteById(id);
         }
     }
-    // tim kiem thuoc
+
+    // Tìm kiếm đơn thuốc (không dùng phân trang, giữ lại nếu cần)
     public List<Prescription> searchPrescriptions(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
             return prescriptionRepository.findAll();

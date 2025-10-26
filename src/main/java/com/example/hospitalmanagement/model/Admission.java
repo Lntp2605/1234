@@ -15,7 +15,7 @@ public class Admission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long admissionId;
     @ManyToOne
-    @JoinColumn(name="patien_id")
+    @JoinColumn(name="patient_id")
     private Patient patient;
     @ManyToOne
     @JoinColumn(name="department_id")

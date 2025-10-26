@@ -5,6 +5,9 @@ import com.example.hospitalmanagement.repository.InvoiceRepository;
 import com.example.hospitalmanagement.repository.PatientRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +41,13 @@ public class InvoiceService {
             return false;
         }
 
+        // Kiểm tra định dạng ngày
+        try {
+            LocalDate.parse(invoice.getBillingDate(), DateTimeFormatter.ISO_LOCAL_DATE);
+        } catch (DateTimeParseException e) {
+            return false; // Ngày không hợp lệ
+        }
+
         // Kiểm tra mã bệnh nhân có tồn tại không
         try {
             Long patientIdLong = Long.parseLong(invoice.getPatientId());
@@ -46,7 +56,7 @@ public class InvoiceService {
                 return false;
             }
         } catch (NumberFormatException e) {
-            return false; // Mã bệnh nhân không hợp lệ (không phải số)
+            return false; // Mã bệnh nhân không hợp lệ
         }
 
         invoiceRepository.save(invoice);
@@ -56,16 +66,47 @@ public class InvoiceService {
     // Cập nhật hóa đơn
     public boolean updateInvoice(Invoice updatedInvoice) {
         Optional<Invoice> optionalInvoice = invoiceRepository.findById(updatedInvoice.getInvoiceId());
-        if (optionalInvoice.isPresent()) {
-            Invoice existing = optionalInvoice.get();
-            existing.setPatientId(updatedInvoice.getPatientId());
-            existing.setAmount(updatedInvoice.getAmount());
-            existing.setBillingDate(updatedInvoice.getBillingDate());
-            existing.setPaymentStatus(updatedInvoice.getPaymentStatus());
-            invoiceRepository.save(existing);
-            return true;
+        if (!optionalInvoice.isPresent()) {
+            return false;
         }
-        return false;
+
+        // Kiểm tra các trường không được để trống
+        if (updatedInvoice.getPatientId() == null || updatedInvoice.getPatientId().trim().isEmpty()
+                || updatedInvoice.getBillingDate() == null || updatedInvoice.getBillingDate().trim().isEmpty()
+                || updatedInvoice.getPaymentStatus() == null || updatedInvoice.getPaymentStatus().trim().isEmpty()) {
+            return false;
+        }
+
+        // Kiểm tra tổng tiền hợp lệ
+        if (updatedInvoice.getAmount() < 0) {
+            return false;
+        }
+
+        // Kiểm tra định dạng ngày
+        try {
+            LocalDate.parse(updatedInvoice.getBillingDate(), DateTimeFormatter.ISO_LOCAL_DATE);
+        } catch (DateTimeParseException e) {
+            return false; // Ngày không hợp lệ
+        }
+
+        // Kiểm tra mã bệnh nhân có tồn tại không
+        try {
+            Long patientIdLong = Long.parseLong(updatedInvoice.getPatientId());
+            boolean patientExists = patientRepository.existsById(patientIdLong);
+            if (!patientExists) {
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            return false; // Mã bệnh nhân không hợp lệ
+        }
+
+        Invoice existing = optionalInvoice.get();
+        existing.setPatientId(updatedInvoice.getPatientId());
+        existing.setAmount(updatedInvoice.getAmount());
+        existing.setBillingDate(updatedInvoice.getBillingDate());
+        existing.setPaymentStatus(updatedInvoice.getPaymentStatus());
+        invoiceRepository.save(existing);
+        return true;
     }
 
     // Xóa hóa đơn
