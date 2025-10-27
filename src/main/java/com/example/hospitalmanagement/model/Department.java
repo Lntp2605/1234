@@ -23,4 +23,6 @@ public class Department {
     private String headOfDepartment;
     private String location;
     private String bedCount;
+
+
 }

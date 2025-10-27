@@ -14,15 +14,16 @@ public class Admission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long admissionId;
+
     @ManyToOne
-    @JoinColumn(name="patient_id")
+    @JoinColumn(name = "patient_id") // ✅ chính xác tên cột trong DB
     private Patient patient;
+
     @ManyToOne
-    @JoinColumn(name="department_id")
+    @JoinColumn(name = "department_id")
     private Department department;
+
     private Date admissionDate;
     private Date dischargeDate;
     private String reasonForAdmission;
-
-
 }

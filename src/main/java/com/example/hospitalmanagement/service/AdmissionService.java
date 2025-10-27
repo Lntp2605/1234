@@ -1,104 +1,40 @@
 package com.example.hospitalmanagement.service;
 
 import com.example.hospitalmanagement.model.Admission;
-import com.example.hospitalmanagement.model.Patient;
 import com.example.hospitalmanagement.repository.AdmissionRepository;
-import com.example.hospitalmanagement.repository.PatientRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
 @Service
-@Transactional
 public class AdmissionService {
 
     @Autowired
     private AdmissionRepository admissionRepository;
 
-    @Autowired
-    private PatientRepository patientRepository;
+    public Page<Admission> getAdmissionsPaginated(int page, int size, String sortField, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("asc") ?
+                Sort.by(sortField).ascending() :
+                Sort.by(sortField).descending();
 
-    // Lấy danh sách tất cả nhập viện
-    public List<Admission> getAllAdmissions() {
-        return admissionRepository.findAll();
+        return admissionRepository.findAll(PageRequest.of(page - 1, size, sort));
     }
 
-    // Thêm mới nhập viện
-    public Admission addAdmission(Admission admission) throws Exception {
-        if (admission.getPatient() == null || admission.getPatient().getPatientId() == null) {
-            throw new Exception("Patient ID cannot be null");
-        }
+    public Page<Admission> searchAdmissions(String keyword, int page, int size, String sortField, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("asc") ?
+                Sort.by(sortField).ascending() :
+                Sort.by(sortField).descending();
 
-        Optional<Patient> patientOpt = patientRepository.findById(admission.getPatient().getPatientId());
-        if (patientOpt.isEmpty()) {
-            throw new Exception("Invalid Patient ID");
-        }
-
-        if (admission.getAdmissionDate() == null || admission.getDischargeDate() == null) {
-            throw new Exception("Admission and Discharge dates cannot be null");
-        }
-
-        if (admission.getAdmissionDate().after(admission.getDischargeDate())) {
-            throw new Exception("Admission date must be before or equal to discharge date");
-        }
-
-        if (admission.getReasonForAdmission() == null || admission.getReasonForAdmission().trim().isEmpty()) {
-            throw new Exception("Reason for admission cannot be blank");
-        }
-
-        admission.setPatient(patientOpt.get());
-        return admissionRepository.save(admission);
+        return admissionRepository.searchAdmissions(keyword, PageRequest.of(page - 1, size, sort));
     }
 
-    // Chỉnh sửa thông tin nhập viện
-    public Admission updateAdmission(Long id, Admission updatedAdmission) throws Exception {
-        Optional<Admission> existingOpt = admissionRepository.findById(id);
-        if (existingOpt.isEmpty()) {
-            throw new Exception("Admission not found");
-        }
-
-        Admission existing = existingOpt.get();
-
-        if (updatedAdmission.getDischargeDate() != null &&
-                updatedAdmission.getAdmissionDate() != null &&
-                updatedAdmission.getAdmissionDate().after(updatedAdmission.getDischargeDate())) {
-            throw new Exception("Admission date must be before or equal to discharge date");
-        }
-
-        existing.setDepartment(updatedAdmission.getDepartment());
-        existing.setAdmissionDate(updatedAdmission.getAdmissionDate());
-        existing.setDischargeDate(updatedAdmission.getDischargeDate());
-        existing.setReasonForAdmission(updatedAdmission.getReasonForAdmission());
-        return admissionRepository.save(existing);
-    }
-
-    // Xóa nhập viện
-    public void deleteAdmission(Long id) {
+    public void deleteAdmissionById(Long id) {
         admissionRepository.deleteById(id);
     }
-
-    // Tìm kiếm theo tên bệnh nhân hoặc lý do nhập viện
-    public List<Admission> searchAdmissions(String keyword) {
-        if (keyword == null || keyword.trim().isEmpty()) {
-            return admissionRepository.findAll();
-        }
-        List<Admission> byName = admissionRepository.findByPatient_NameContainingIgnoreCase(keyword);
-        List<Admission> byReason = admissionRepository.findByReasonForAdmissionContainingIgnoreCase(keyword);
-
-        byReason.stream()
-                .filter(admission -> !byName.contains(admission))
-                .forEach(byName::add);
-
-        return byName;
+    public void saveAdmission(Admission admission) {
+        admissionRepository.save(admission);
     }
-
-    // Tìm theo ID
-    public Admission getAdmissionById(Long id) throws Exception {
-        return admissionRepository.findById(id)
-                .orElseThrow(() -> new Exception("Admission not found"));
+    public Admission getById(Long id) {
+        return admissionRepository.findById(id).orElse(null);
     }
 }
